@@ -1,0 +1,23 @@
+{
+  "name": "dofustouchmap",
+  "version": "1.0.0",
+  "description": "DofusTouch Map",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron main.js --devmode",
+    "dist-mac": "build --mac",
+    "dist-linux": "build --linux --x64 --ia32",
+    "dist-win": "build --win --x64 --ia32",
+    "dist-all": "npm run dist-mac && npm run dist-linux && npm run dist-win"
+  },
+  "keywords": [
+    "electron",
+    "dofus",
+    "leaflet"
+  ],
+  "author": "Eausa",
+  "dependencies": {
+    "electron": "^1.8.2",
+    "electron-builder": "^20.2.0"
+  }
+}
