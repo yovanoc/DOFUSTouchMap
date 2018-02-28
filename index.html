@@ -39,6 +39,22 @@
                 noWrap: !0,
                 bounds:  bounds,
             }).addTo(map);
+            console.log(map.getCenter())
+            map.on('mousemove', (mouseEvent) => {
+                const xy = mapXYtoDofusXY(mouseEvent);
+                console.log(xy);
+            });
+
+            const cellheight = 4096 / 161; // 4096 = 2x2048 (lat of the map's center). 161 = Number of map between left and right
+            const cellwidth = 5120 / 144; // 5120 = 2x2560 (lng of the map's center). 144 = Number of map between the top and the bottom
+            const dofus00 = [-2545, +3340]; // Values returned by mouseEvent on dofus "0,0" (could be more precise).
+
+            function mapXYtoDofusXY(mouseEvent) {
+                return [
+                    Math.round((mouseEvent.latlng.lng - dofus00[1]) / cellwidth),
+                    Math.round((-mouseEvent.latlng.lat + dofus00[0]) / cellheight),
+                ];
+            }
         }
     </script>
     <body onload='init()'>
