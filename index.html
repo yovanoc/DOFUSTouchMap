@@ -23,26 +23,33 @@
             const maxZoom = 1; // maxZoom = minZoom, because it's kinda buggy somehow
             // create the map
             const map = L.map('map', {
-                minZoom: 1,
-                maxZoom: 1,
+                minZoom: minZoom,
+                maxZoom: maxZoom,
                 zoom: 1,
                 crs: L.CRS.Simple,
             });
+
             const bounds = new L.LatLngBounds(map.unproject([0, 8192], maxZoom), map.unproject([10240, 0], maxZoom));
 
             map.fitBounds(bounds);
 
             L.tileLayer('./maps/1/{x}/{y}.jpg', {
-                minZoom: 1,
-                maxZoom: 1,
+                minZoom: minZoom,
+                maxZoom: maxZoom,
                 zoom: 1,
-                noWrap: !0,
-                bounds:  bounds,
+                noWrap: false,
+                bounds: bounds,
             }).addTo(map);
-            console.log(map.getCenter())
+
+            let xy = [0, 0];
+            let storeXY = xy;
+
             map.on('mousemove', (mouseEvent) => {
-                const xy = mapXYtoDofusXY(mouseEvent);
-                console.log(xy);
+                xy = mapXYtoDofusXY(mouseEvent);
+                if ((xy[0] !== storeXY[0]) || (xy[1] !== storeXY[1])) {
+                    storeXY = xy;
+                    console.log(xy);
+                }
             });
 
             const cellheight = 4096 / 161; // 4096 = 2x2048 (lat of the map's center). 161 = Number of map between left and right
