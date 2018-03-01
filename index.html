@@ -77,7 +77,9 @@
 
             const cellheight = 4096 / 161; // 4096 = 2x2048 (lat of the map's center). 161 = Number of map between left and right
             const cellwidth = 5120 / 144; // 5120 = 2x2560 (lng of the map's center). 144 = Number of map between the top and the bottom
-            const dofus00 = [-2545, +3335]; // Values returned by mouseEvent on dofus '0,0' (could be more precise).
+            let dofus = [];
+            dofus['lat'] = -cellheight * 100;
+            dofus['lng'] = cellwidth * 94 - cellwidth / 5;
 
             const bounds = new L.LatLngBounds(map.unproject([0, 8192], maxZoom), map.unproject([10240, 0], maxZoom));
 
@@ -97,6 +99,7 @@
             let mapXY = xy;
             let marker = {};
             let focused = false;
+            let array;
 
             const rectangle = L.divIcon({
                 iconSize: [2 * cellwidth, 2 * cellheight]
@@ -135,16 +138,16 @@
             });
 
             function mapXYtoDofusXY(latlng) {
-                let array = [];
-                array['lng'] = Math.round((latlng.lng - dofus00[1]) / cellwidth);
-                array['lat'] = Math.round((-latlng.lat + dofus00[0]) / cellheight);
+                array = [];
+                array['lng'] = Math.round((latlng.lng - dofus['lng']) / cellwidth);
+                array['lat'] = Math.round((-latlng.lat + dofus['lat']) / cellheight);
                 return array
             }
 
             function DofusXYtomapXY(xy) {
-                let array = [];
-                array['lng'] = Math.round(xy['lng'] * cellwidth + dofus00[1]);
-                array['lat'] = Math.round(-(xy['lat'] * cellheight - dofus00[0]));
+                array = [];
+                array['lng'] = Math.round(xy['lng'] * cellwidth + dofus['lng']);
+                array['lat'] = Math.round(-(xy['lat'] * cellheight - dofus['lat']));
                 return array
             }
         }
