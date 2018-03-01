@@ -106,6 +106,7 @@
                 xy = mapXYtoDofusXY(mouseEvent.latlng);
                 if (((xy["lng"] !== storeXY["lng"]) || (xy["lat"] !== storeXY["lat"])) && !focused) {
                     storeXY = xy;
+                    storeClick = []; // reset storeClick
                     mapXY = DofusXYtomapXY(xy);
                     if (marker.isActive) {
                         map.removeLayer(marker);
