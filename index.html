@@ -65,6 +65,7 @@
             opacity: 0.8;
             border-radius: 4px;
             user-select: none;
+            z-index: 10;
         }
         #scriptTools {
             margin: 30px 0 0 10px;
@@ -197,7 +198,7 @@
             let mapXY = xy;
             let marker = {};
             let focused = false;
-            let mapArray = []; // Array<{latlng:['lat': number,'lng':number], actions:{fight:boolean, gather:boolean}}>
+            //let mapArray = []; // Array<{latlng:['lat': number,'lng':number], actions:{fight:boolean, gather:boolean}}>
             let array;
 
             const rectangle = L.divIcon({
