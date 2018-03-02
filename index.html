@@ -157,7 +157,6 @@
                     element.setAttribute('style', 'display: none;');
                     element.setAttribute('id', `display-${name}`);
                     createList(`display-${name}`, type);
-                    addLi(`ul-display-${name}`, 'test');
                 }
 
                 let form = document.createElement('form');
@@ -187,26 +186,63 @@
             config();
 
             function getValues() {
-                
+                function getInput(id) {
+                    const input = document.getElementById(id);
+                    if (input.value !== input.defaultValue && input.value !== undefined) {
+                        //
+                    }
+                }
+                function getCheckbox(id) {
+                    if (document.getElementById(id).checked) {
+                        //
+                    }
+                }
+                function getList(id) {
+                    const id = document.getElementById(`ul-display-${id}`).innerHTML.replace('<li>', '').split('</li>').slice(0, -1);
+                    if (id.length > 0) {
+                        id.forEach((value, index) => {
+                            id[index] = value.replace('<li>', '');
+                        })
+                        //
+                    }
+                }
+                getInput('MAX_PODS');
+                getInput('MIN_MONSTERS');
+                getInput('MAX_MONSTERS');
+                getInput('MIN_MONSTERS_LEVEL');
+                getInput('MAX_MONSTERS_LEVEL');
+                getInput('MAX_FIGHTS_PER_MAP');
+                getInput('BANK_PUT_KAMAS');
+                getInput('BANK_GET_KAMAS');
+                getCheckbox('OPEN_BAGS');
+                getCheckbox('DISPLAY_GATHER_COUNT');
+                getCheckbox('DISPLAY_FIGHT_COUNT');
+                getList('FORBIDDEN_MONSTERS');
+                getList('MANDATORY_MONSTERS');
+                getList('ELEMENTS_TO_GATHER');
+                getList('BANK_PUT_ITEMS');
+                getList('BANK_GET_ITEMS');
+                getList('AUTO_REGEN');
+                getList('AUTO_DELETE');
             }
         }
         function showDropdown(id) {
             const item = document.getElementById(`item-${id}`);
             item.removeAttribute('onclick');
             item.removeAttribute('style');
-            document.getElementById(`display-${id}`).setAttribute('style', 'display:initial; cursor:initial;');
             const title = document.getElementById(`title-${id}`);
             title.setAttribute('onclick', `hideDropdown('${id}')`);
             title.setAttribute('style', 'cursor:pointer;');
+            document.getElementById(`display-${id}`).setAttribute('style', 'display:initial; cursor:initial;');
         }
         function hideDropdown(id) {
+            const item = document.getElementById(`item-${id}`);
+            item.setAttribute('onclick', `fixBugHide('${id}')`);
+            item.setAttribute('style', 'cursor:pointer;');
             const title = document.getElementById(`title-${id}`);
             title.removeAttribute('onclick');
             title.removeAttribute('style');
             document.getElementById(`display-${id}`).setAttribute('style', 'display:none;');
-            const item = document.getElementById(`item-${id}`);
-            item.setAttribute('onclick', `fixBugHide('${id}')`);
-            item.setAttribute('style', 'cursor:pointer;');
         }
         function fixBugHide(id) { // hideDropdown calls directly showDropdown, so the dropdown never hide.
             document.getElementById(`item-${id}`).setAttribute('onclick', `showDropdown('${id}')`);
