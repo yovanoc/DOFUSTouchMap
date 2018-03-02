@@ -139,6 +139,7 @@ input:hover {
     border: 2px solid #717171;
     transition: all .2s ease-out;
     box-shadow: 2px 2px 4px rgba(0, 0, 0, .26);
+    background-color: white;
 }
 
 .checkbox .input-checkbox input[type='checkbox']:hover + .checkbox-span:before {
@@ -155,7 +156,7 @@ input:hover {
 }
 
 .item {
-    background: rgb(230, 230, 230);
+    background: white;
     box-shadow: 2px 2px 4px rgba(0, 0, 0, .26);
     user-select: none;
     position: relative;
@@ -166,13 +167,16 @@ input:hover {
 }
 
 .item:hover, .item:focus {
+    color: rgb(90, 120, 240);
     box-shadow: 4px 4px 9px rgba(0, 0, 0, .26);
 }
 
 li {
     text-align: left;
 }
-
+ul {
+    color: black;
+}
 /*.button {
     text-align: left;
 }
