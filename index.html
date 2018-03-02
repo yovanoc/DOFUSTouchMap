@@ -127,11 +127,13 @@
                     span.setAttribute('class', 'checkbox-span');
                 }
 
-                function createDropdownList(name) {
-                    function createList(id) {
+                function createDropdownList(name, type) {
+                    function createList(id, type) {
                         let element = document.getElementById(id);
-                        //let button = element.appendChild(document.createElement('div'));
-                        //button.setAttribute('class', 'button');
+                        const button = element.appendChild(document.createElement('div'));
+                        button.innerText = `Add ${type}`
+                        button.setAttribute('class', 'button');
+                        button.setAttribute('onclick', `openPopup('${type}')`);
                         element = element.appendChild(document.createElement('nav'));
                         element = element.appendChild(document.createElement('ul'));
                         element.setAttribute('id', `ul-${id}`);
@@ -154,7 +156,7 @@
                     element.setAttribute('class', 'content');
                     element.setAttribute('style', 'display: none;');
                     element.setAttribute('id', `display-${name}`);
-                    createList(`display-${name}`);
+                    createList(`display-${name}`, type);
                     addLi(`ul-display-${name}`, 'test');
                 }
 
@@ -174,13 +176,13 @@
                 createCheckbox('OPEN_BAGS'); // boolean
                 createCheckbox('DISPLAY_GATHER_COUNT'); // boolean
                 createCheckbox('DISPLAY_FIGHT_COUNT'); // boolean
-                createDropdownList('FORBIDDEN_MONSTERS'/*, monster*/); // Array<monstersIds>
-                createDropdownList('MANDATORY_MONSTERS'/*, monster*/); // Array<monstersIds>
-                createDropdownList('ELEMENTS_TO_GATHER'/*, resource*/); // Array<resourcesIds>
-                createDropdownList('BANK_PUT_ITEMS'/*, item*/); // Array<itemsIds>
-                createDropdownList('BANK_GET_ITEMS'/*, item*/); // Array<itemsIds>
-                createDropdownList('AUTO_REGEN'/*, item*/); // Array<itemsIds>
-                createDropdownList('AUTO_DELETE'/*, item*/); // Array<itemsIds>
+                createDropdownList('FORBIDDEN_MONSTERS', 'monster'); // Array<monstersIds>
+                createDropdownList('MANDATORY_MONSTERS', 'monster'); // Array<monstersIds>
+                createDropdownList('ELEMENTS_TO_GATHER', 'resource'); // Array<resourcesIds>
+                createDropdownList('BANK_PUT_ITEMS', 'item'); // Array<itemsIds>
+                createDropdownList('BANK_GET_ITEMS', 'item'); // Array<itemsIds>
+                createDropdownList('AUTO_REGEN', 'item'); // Array<itemsIds>
+                createDropdownList('AUTO_DELETE', 'item'); // Array<itemsIds>
             }
             config();
 
@@ -189,17 +191,29 @@
             }
         }
         function showDropdown(id) {
-            document.getElementById(`item-${id}`).removeAttribute('onclick');
-            document.getElementById(`display-${id}`).setAttribute('style', 'display:initial;');
-            document.getElementById(`title-${id}`).setAttribute('onclick', `hideDropdown('${id}')`);
+            const item = document.getElementById(`item-${id}`);
+            item.removeAttribute('onclick');
+            item.removeAttribute('style');
+            document.getElementById(`display-${id}`).setAttribute('style', 'display:initial; cursor:initial;');
+            const title = document.getElementById(`title-${id}`);
+            title.setAttribute('onclick', `hideDropdown('${id}')`);
+            title.setAttribute('style', 'cursor:pointer;');
         }
         function hideDropdown(id) {
-            document.getElementById(`title-${id}`).removeAttribute('onclick');
+            const title = document.getElementById(`title-${id}`);
+            title.removeAttribute('onclick');
+            title.removeAttribute('style');
             document.getElementById(`display-${id}`).setAttribute('style', 'display:none;');
-            document.getElementById(`item-${id}`).setAttribute('onclick', `fixBugHide('${id}')`);
+            const item = document.getElementById(`item-${id}`);
+            item.setAttribute('onclick', `fixBugHide('${id}')`);
+            item.setAttribute('style', 'cursor:pointer;');
         }
         function fixBugHide(id) { // hideDropdown calls directly showDropdown, so the dropdown never hide.
             document.getElementById(`item-${id}`).setAttribute('onclick', `showDropdown('${id}')`);
+        }
+        function openPopup(type) {
+            console.log(type);
+            // TODO open popup
         }
     </script>
     <body onload='init()'>
