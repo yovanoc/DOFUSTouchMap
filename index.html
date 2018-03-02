@@ -13,6 +13,35 @@
             padding: 0;
             margin: 0;
             overflow: hidden;
+            font-family: Roboto, sans-serif;
+        }
+        label {
+            user-select: none;
+        }
+        input {
+            font-size: 18px;
+            padding: 10px 10px 10px 5px;
+            display: block;
+            position: relative;
+            width: 28%;
+            border: none;
+            color: #838383;
+            border-bottom: 1px solid #757575;
+            margin-bottom: 10px;
+            margin-top: 3px;
+            box-shadow: 2px 2px 4px rgba(0, 0, 0, .26);
+        }
+        input:focus, input:focus:hover {
+            outline: none;
+            border-bottom: 2px solid #5264AE;
+            margin-bottom: 9px;
+            box-shadow: 4px 4px 8px rgba(0, 0, 0, .26);
+        }
+        input:hover {
+            outline: none;
+            border-bottom: 2px solid #5264AE;
+            margin-bottom: 9px;
+            box-shadow: 3px 3px 6px rgba(0, 0, 0, .26);
         }
         #map {
             z-index: 3;
@@ -37,6 +66,14 @@
             border-radius: 4px;
             user-select: none;
         }
+        #scriptTools {
+            margin: 30px 0 0 10px;
+            overflow-y: scroll;
+        }
+        #OPEN_BAGS, #DISPLAY_GATHER_COUNT, #DISPLAY_FIGHT_COUNT {
+            box-shadow: none;
+            margin: 0 0 7px 0;
+        }
         .menu {
             z-index: 2;
             position: absolute;
@@ -54,6 +91,7 @@
             width: 100%;
             height: 100%;
             background-color: whitesmoke;
+            overflow: scroll;
         }
         .leaflet-control-container {
             display: none;
@@ -61,6 +99,66 @@
         .leaflet-div-icon {
             background: transparent;
             border: 2px solid black;
+        }
+        .checkbox .input-checkbox {
+            color: whitesmoke;
+            position: relative;
+            display: inline-block;
+            width: 32px;
+            height: 32px;
+            vertical-align: -9px;
+            margin-bottom: 0;
+            vertical-align: middle;
+            cursor: pointer;
+        }
+        .checkbox .input-checkbox input[type='checkbox'] {
+            visibility: hidden;
+            position: absolute;
+            left: 7px;
+            bottom: 7px;
+            margin: 0;
+            padding: 0;
+            outline: none;
+            opacity: 0;
+        }
+        .checkbox .input-checkbox input[type='checkbox'] + .checkbox-span:before {
+            position: absolute;
+            left: 4px;
+            width: 18px;
+            height: 18px;
+            font-size: 20px;
+            line-height: 1;
+            content: '';
+            border: 2px solid #717171;
+            transition: all .2s ease-out;
+            box-shadow: 2px 2px 4px rgba(0, 0, 0, .26);
+        }
+        .checkbox .input-checkbox input[type='checkbox']:hover + .checkbox-span:before {
+            border: 2px solid #03a9f4;
+            box-shadow: 3px 3px 6px rgba(0, 0, 0, .26);
+        }
+        .checkbox .input-checkbox input[type='checkbox']:checked + .checkbox-span:before {
+            content: '✓';
+            color: whitesmoke;
+            background-color: #03a9f4;
+            border: 2px solid #03a9f4;
+            box-shadow: 4px 4px 8px rgba(0, 0, 0, .26);
+        }
+        .item {
+            background: rgb(230, 230, 230);
+            box-shadow: 2px 2px 4px rgba(0, 0, 0, .26);
+            user-select: none;
+            position: relative;
+            width: 28%;
+            text-align: center;
+            transition: all .3s ease;
+            margin-bottom: 1rem;
+        }
+        .item:hover, .item:focus {
+            box-shadow: 4px 4px 9px rgba(0, 0, 0, .26);
+        }
+        li {
+            text-align: left;
         }
     </style>
     <script>
@@ -79,7 +177,7 @@
             const cellwidth = 5120 / 144; // 5120 = 2x2560 (lng of the map's center). 144 = Number of map between the top and the bottom
             let dofus = [];
             dofus['lat'] = -cellheight * 100;
-            dofus['lng'] = cellwidth * 94 - cellwidth / 5;
+            dofus['lng'] = cellwidth * 94 - cellwidth / 4.5;
 
             const bounds = new L.LatLngBounds(map.unproject([0, 8192], maxZoom), map.unproject([10240, 0], maxZoom));
 
@@ -99,6 +197,7 @@
             let mapXY = xy;
             let marker = {};
             let focused = false;
+            let mapArray = []; // Array<{latlng:['lat': number,'lng':number], actions:{fight:boolean, gather:boolean}}>
             let array;
 
             const rectangle = L.divIcon({
@@ -114,7 +213,7 @@
                     if (marker.isActive) {
                         map.removeLayer(marker);
                     }
-                    marker = L.marker([mapXY['lat'], mapXY['lng']], {icon: rectangle}).addTo(map);  
+                    marker = L.marker([mapXY['lat'], mapXY['lng']], { icon: rectangle }).addTo(map);  
                     marker.isActive = true;
                     document.getElementById('coords').innerText = `[${xy['lng'].toString()},${xy['lat'].toString()}]`;
                 }
@@ -129,7 +228,7 @@
                     if (marker.isActive) {
                         map.removeLayer(marker);
                     }
-                    marker = L.marker([mapXY['lat'], mapXY['lng']], {icon: rectangle}).addTo(map);  
+                    marker = L.marker([mapXY['lat'], mapXY['lng']], { icon: rectangle }).addTo(map);  
                     marker.isActive = true;
                     document.getElementById('coords').innerText = `[${xy['lng'].toString()},${xy['lat'].toString()}]`;
                 } else {
@@ -150,6 +249,100 @@
                 array['lat'] = Math.round(-(xy['lat'] * cellheight - dofus['lat']));
                 return array
             }
+
+            function config() {
+                function createInput(name, value, min, max) {
+                    let element = document.getElementById('config');
+                    element = element.appendChild(document.createElement('label'));
+                    element.innerText = name;
+                    element = element.appendChild(document.createElement('input'));
+                    element.setAttribute('type', 'number');
+                    element.setAttribute('value', value);
+                    element.setAttribute('id', name);
+                    if (min && max) {
+                        element.setAttribute('min', min);
+                        element.setAttribute('max', max);
+                    }
+                }
+
+                function createCheckbox(name) {
+                    let element = document.getElementById('config');
+                    element = element.appendChild(document.createElement('div'));
+                    element.setAttribute('class', 'checkbox checkbox-ripple');
+                    let label = element.appendChild(document.createElement('label'));
+                    label.setAttribute('for', name);
+                    label.innerText = name;
+                    label = element.appendChild(document.createElement('label'));
+                    label.setAttribute('class', 'input-checkbox');
+                    const input = label.appendChild(document.createElement('input'));
+                    input.setAttribute('type', 'checkbox');
+                    input.setAttribute('id', name);
+                    const span = label.appendChild(document.createElement('span'));
+                    span.setAttribute('class', 'checkbox-span');
+                }
+
+                function createDropdownList(name) {
+                    function createList(id) {
+                        let element = document.getElementById(id);
+                        element = element.appendChild(document.createElement('nav'));
+                        element = element.appendChild(document.createElement('ul'));
+                        element.setAttribute('id', `ul-${id}`);
+                    }
+                    function addLi(id, name) {
+                        let element = document.getElementById(id);
+                        element = element.appendChild(document.createElement('li'));
+                        element.innerText = name;
+                    }
+                    let element = document.getElementById('config');
+                    element = element.appendChild(document.createElement('div'));
+                    element.setAttribute('class', 'item');
+                    element.setAttribute('style', 'cursor:pointer;');
+                    element.setAttribute('onclick', `showDropdown('${name}')`);
+                    element.setAttribute('id', `item-${name}`);
+                    let title = element.appendChild(document.createElement('div'));
+                    title.setAttribute('class', 'title');
+                    title.innerText = name;
+                    element = element.appendChild(document.createElement('div'));
+                    element.setAttribute('class', 'content');
+                    element.setAttribute('style', 'display: none;');
+                    element.setAttribute('id', `display-${name}`);
+                    createList(`display-${name}`);
+                    addLi(`ul-display-${name}`, 'test');
+                }
+
+                let form = document.createElement('form');
+                //form.innerText = '';
+                form.setAttribute('id', 'config');
+                form = document.getElementById('scriptTools').appendChild(form);
+                form.appendChild(document.createElement('br'));
+                createInput('MAX_PODS', 90, 0, 100); // number
+                createInput('MIN_MONSTERS', 1, 0, 8); // number
+                createInput('MAX_MONSTERS', 8, 0, 8); // number
+                createInput('MIN_MONSTERS_LEVEL', 1); // number
+                createInput('MAX_MONSTERS_LEVEL', 1000); // number
+                createInput('MAX_FIGHTS_PER_MAP'); // number
+                createInput('BANK_PUT_KAMAS'); // number
+                createInput('BANK_GET_KAMAS'); // number
+                createCheckbox('OPEN_BAGS'); // boolean
+                createCheckbox('DISPLAY_GATHER_COUNT'); // boolean
+                createCheckbox('DISPLAY_FIGHT_COUNT'); // boolean
+                createDropdownList('FORBIDDEN_MONSTERS'/*, monster*/); // Array<monstersIds>
+                createDropdownList('MANDATORY_MONSTERS'/*, monster*/); // Array<monstersIds>
+                createDropdownList('ELEMENTS_TO_GATHER'/*, resource*/); // Array<resourcesIds>
+                createDropdownList('BANK_PUT_ITEMS'/*, item*/); // Array<itemsIds>
+                createDropdownList('BANK_GET_ITEMS'/*, item*/); // Array<itemsIds>
+                createDropdownList('AUTO_REGEN'/*, item*/); // Array<itemsIds>
+                createDropdownList('AUTO_DELETE'/*, item*/); // Array<itemsIds>
+            }
+            config();
+        }
+        function showDropdown(id) {
+            document.getElementById(`display-${id}`).setAttribute('style', 'display:initial;');
+            document.getElementById(`item-${id}`).setAttribute('onclick', `hideDropdown('${id}')`);
+        }
+        function hideDropdown(id) {
+            document.getElementById(`display-${id}`).setAttribute('style', 'display:none;');
+            document.getElementById(`item-${id}`).setAttribute('onclick', `showDropdown('${id}')`);
         }
     </script>
     <body onload='init()'>
@@ -157,6 +350,7 @@
         <div class='menu'></div>
         <div class='menu-lateral'>
             <p align='center' id='coords'>[0,0]</p>
+            <div id='scriptTools'></div>
         </div>
     </body>
 </html>
