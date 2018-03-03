@@ -105,12 +105,13 @@
                     element.setAttribute('type', 'number');
                     element.setAttribute('value', value);
                     element.setAttribute('id', name);
-                    if (min && max) {
+                    if (min) {
                         element.setAttribute('min', min);
+                    }
+                    if (max) {
                         element.setAttribute('max', max);
                     }
                 }
-
                 function createCheckbox(name) {
                     let element = document.getElementById('config');
                     element = element.appendChild(document.createElement('div'));
@@ -132,16 +133,11 @@
                         let element = document.getElementById(id);
                         const button = element.appendChild(document.createElement('div'));
                         button.innerText = `Add ${type}`
-                        button.setAttribute('class', 'button');
-                        button.setAttribute('onclick', `openPopup('${type}')`);
+                        button.setAttribute('class', 'button button-primary');
+                        button.setAttribute('onclick', `openPopup('${type}', 'ul-${id}')`);
                         element = element.appendChild(document.createElement('nav'));
                         element = element.appendChild(document.createElement('ul'));
                         element.setAttribute('id', `ul-${id}`);
-                    }
-                    function addLi(id, name) {
-                        let element = document.getElementById(id);
-                        element = element.appendChild(document.createElement('li'));
-                        element.innerText = name;
                     }
                     let element = document.getElementById('config');
                     element = element.appendChild(document.createElement('div'));
@@ -167,11 +163,11 @@
                 createInput('MAX_PODS', 90, 0, 100); // number
                 createInput('MIN_MONSTERS', 1, 0, 8); // number
                 createInput('MAX_MONSTERS', 8, 0, 8); // number
-                createInput('MIN_MONSTERS_LEVEL', 1); // number
-                createInput('MAX_MONSTERS_LEVEL', 1000); // number
-                createInput('MAX_FIGHTS_PER_MAP'); // number
-                createInput('BANK_PUT_KAMAS'); // number
-                createInput('BANK_GET_KAMAS'); // number
+                createInput('MIN_MONSTERS_LEVEL', 1, 0); // number
+                createInput('MAX_MONSTERS_LEVEL', 1000, 0); // number
+                createInput('MAX_FIGHTS_PER_MAP', undefined, 0); // number
+                createInput('BANK_PUT_KAMAS', undefined, 0); // number
+                createInput('BANK_GET_KAMAS', undefined, 0); // number
                 createCheckbox('OPEN_BAGS'); // boolean
                 createCheckbox('DISPLAY_GATHER_COUNT'); // boolean
                 createCheckbox('DISPLAY_FIGHT_COUNT'); // boolean
@@ -229,10 +225,10 @@
         function showDropdown(id) {
             const item = document.getElementById(`item-${id}`);
             item.removeAttribute('onclick');
-            item.removeAttribute('style');
+            item.setAttribute('style', 'color:initial;');
             const title = document.getElementById(`title-${id}`);
             title.setAttribute('onclick', `hideDropdown('${id}')`);
-            title.setAttribute('style', 'cursor:pointer;');
+            title.setAttribute('class', 'title');
             document.getElementById(`display-${id}`).setAttribute('style', 'display:initial; cursor:initial;');
         }
         function hideDropdown(id) {
@@ -241,15 +237,35 @@
             item.setAttribute('style', 'cursor:pointer;');
             const title = document.getElementById(`title-${id}`);
             title.removeAttribute('onclick');
-            title.removeAttribute('style');
             document.getElementById(`display-${id}`).setAttribute('style', 'display:none;');
         }
         function fixBugHide(id) { // hideDropdown calls directly showDropdown, so the dropdown never hide.
             document.getElementById(`item-${id}`).setAttribute('onclick', `showDropdown('${id}')`);
         }
-        function openPopup(type) {
-            console.log(type);
-            // TODO open popup
+        function openPopup(type, id) {
+            let element = document.getElementsByTagName('body')[0].appendChild(document.createElement('div'));
+            element.setAttribute('id', 'search-container');
+            element.setAttribute('class', 'search-container');
+            element = element.appendChild(document.createElement('div'));
+            element.setAttribute('class', 'search');
+            // Show all ids
+            const quit = element.appendChild(document.createElement('div'));
+            quit.setAttribute('class', 'button button-danger');
+            quit.setAttribute('onclick', `document.getElementsByTagName('body')[0].removeChild(document.getElementById('search-container'))`);
+            quit.innerText = 'Quit';
+            const save = element.appendChild(document.createElement('div'));
+            save.setAttribute('class', 'button button-success');
+            save.setAttribute('onclick', `saveAndClose('${id}')`);
+            save.innerText = 'Save';
+        }
+        function saveAndClose(id) {
+            function addLi(name) {
+                let element = document.getElementById(id);
+                element = element.appendChild(document.createElement('li'));
+                element.innerText = name;
+            }
+            // Get all ids in popup as array, then foreach element addli
+            document.getElementsByTagName('body')[0].removeChild(document.getElementById('search-container'));
         }
     </script>
     <body onload='init()'>
