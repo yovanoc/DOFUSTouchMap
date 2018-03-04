@@ -1,227 +1,138 @@
-
-function init() {
-    const minZoom = 1;
-    const maxZoom = 1; // maxZoom = minZoom, because it's kinda buggy somehow
-    // create the map
-    const map = L.map('map', {
-        minZoom: minZoom,
-        maxZoom: maxZoom,
-        zoom: 1,
-        crs: L.CRS.Simple,
-    });
-
-    const cellheight = 4096 / 161; // 4096 = 2x2048 (lat of the map's center). 161 = Number of map between left and right
-    const cellwidth = 5120 / 144; // 5120 = 2x2560 (lng of the map's center). 144 = Number of map between the top and the bottom
-    let dofus = [];
-    dofus['lat'] = -cellheight * 100;
-    dofus['lng'] = cellwidth * 94 - cellwidth / 4.5;
-
-    const bounds = new L.LatLngBounds(map.unproject([0, 8192], maxZoom), map.unproject([10240, 0], maxZoom));
-
-    map.fitBounds(bounds);
-
-    L.tileLayer('./maps/1/{x}/{y}.jpg', {
-        minZoom: minZoom,
-        maxZoom: maxZoom,
-        zoom: 1,
-        noWrap: false,
-        bounds: bounds,
-    }).addTo(map);
-
-    let xy = [];
-    let storeXY = xy;
-    let storeClick = xy;
-    let mapXY = xy;
-    let marker = {};
-    let focused = false;
-    //let mapArray = []; // Array<{latlng:['lat': number,'lng':number], actions:{fight:boolean, gather:boolean}}>
-    let array;
-
-    const rectangle = L.divIcon({
-        iconSize: [2 * cellwidth, 2 * cellheight]
-    });
-
-    map.on('mousemove', (mouseEvent) => {
-        xy = mapXYtoDofusXY(mouseEvent.latlng);
-        if (((xy['lng'] !== storeXY['lng']) || (xy['lat'] !== storeXY['lat'])) && !focused) {
-            storeXY = xy;
-            storeClick = []; // reset storeClick
-            mapXY = DofusXYtomapXY(xy);
-            if (marker.isActive) {
-                map.removeLayer(marker);
-            }
-            marker = L.marker([mapXY['lat'], mapXY['lng']], { icon: rectangle }).addTo(map);  
-            marker.isActive = true;
-            document.getElementById('coords').innerText = `[${xy['lng'].toString()},${xy['lat'].toString()}]`;
+function config() {
+    function createInput(name, value, min, max) {
+        let element = document.getElementById('config');
+        element = element.appendChild(document.createElement('label'));
+        element.innerText = name;
+        element = element.appendChild(document.createElement('input'));
+        element.setAttribute('type', 'number');
+        element.setAttribute('value', value);
+        element.setAttribute('id', name);
+        if (min) {
+            element.setAttribute('min', min);
         }
-    });
-
-    map.on('click', (mouseEvent) => {
-        xy = mapXYtoDofusXY(mouseEvent.latlng);
-        if ((xy['lng'] !== storeClick['lng']) || (xy['lat'] !== storeClick['lat'])) {
-            storeClick = xy;
-            focused = true;
-            mapXY = DofusXYtomapXY(xy);
-            if (marker.isActive) {
-                map.removeLayer(marker);
-            }
-            marker = L.marker([mapXY['lat'], mapXY['lng']], { icon: rectangle }).addTo(map);  
-            marker.isActive = true;
-            document.getElementById('coords').innerText = `[${xy['lng'].toString()},${xy['lat'].toString()}]`;
-        } else {
-            focused = false; // disable focus on click on a focused map
+        if (max) {
+            element.setAttribute('max', max);
         }
-    });
-
-    function mapXYtoDofusXY(latlng) {
-        array = [];
-        array['lng'] = Math.round((latlng.lng - dofus['lng']) / cellwidth);
-        array['lat'] = Math.round((-latlng.lat + dofus['lat']) / cellheight);
-        return array
     }
 
-    function DofusXYtomapXY(xy) {
-        array = [];
-        array['lng'] = Math.round(xy['lng'] * cellwidth + dofus['lng']);
-        array['lat'] = Math.round(-(xy['lat'] * cellheight - dofus['lat']));
-        return array
+    function createCheckbox(name) {
+        let element = document.getElementById('config');
+        element = element.appendChild(document.createElement('div'));
+        element.setAttribute('class', 'checkbox checkbox-ripple');
+        let label = element.appendChild(document.createElement('label'));
+        label.setAttribute('for', name);
+        label.innerText = name;
+        label = element.appendChild(document.createElement('label'));
+        label.setAttribute('class', 'input-checkbox');
+        const input = label.appendChild(document.createElement('input'));
+        input.setAttribute('type', 'checkbox');
+        input.setAttribute('id', name);
+        const span = label.appendChild(document.createElement('span'));
+        span.setAttribute('class', 'checkbox-span');
     }
 
-    function config() {
-        function createInput(name, value, min, max) {
-            let element = document.getElementById('config');
-            element = element.appendChild(document.createElement('label'));
-            element.innerText = name;
-            element = element.appendChild(document.createElement('input'));
-            element.setAttribute('type', 'number');
-            element.setAttribute('value', value);
-            element.setAttribute('id', name);
-            if (min) {
-                element.setAttribute('min', min);
-            }
-            if (max) {
-                element.setAttribute('max', max);
-            }
+    function createDropdownTable(name, type) {
+        function createList(id, type) {
+            let element = document.getElementById(id);
+            const button = element.appendChild(document.createElement('div'));
+            button.innerText = `Add ${type}`
+            button.setAttribute('class', 'button button-primary');
+            button.setAttribute('onclick', `openPopup('${type}', 'table-${id}')`);
+            const table = element.appendChild(document.createElement('table'));
+            table.setAttribute('id', `table-${id}`);
+            table.setAttribute('class', 'table');
+            const tr = table.appendChild(document.createElement('tr'));
+            const stcolumn = tr.appendChild(document.createElement('th'));
+            stcolumn.setAttribute('style', 'width:80%;');
+            stcolumn.innerText = type;
+            const ndcolumn = tr.appendChild(document.createElement('th'));
+            ndcolumn.setAttribute('style', 'width:20%;');
+            ndcolumn.innerText = 'id';
         }
-
-        function createCheckbox(name) {
-            let element = document.getElementById('config');
-            element = element.appendChild(document.createElement('div'));
-            element.setAttribute('class', 'checkbox checkbox-ripple');
-            let label = element.appendChild(document.createElement('label'));
-            label.setAttribute('for', name);
-            label.innerText = name;
-            label = element.appendChild(document.createElement('label'));
-            label.setAttribute('class', 'input-checkbox');
-            const input = label.appendChild(document.createElement('input'));
-            input.setAttribute('type', 'checkbox');
-            input.setAttribute('id', name);
-            const span = label.appendChild(document.createElement('span'));
-            span.setAttribute('class', 'checkbox-span');
-        }
-
-        function createDropdownTable(name, type) {
-            function createList(id, type) {
-                let element = document.getElementById(id);
-                const button = element.appendChild(document.createElement('div'));
-                button.innerText = `Add ${type}`
-                button.setAttribute('class', 'button button-primary');
-                button.setAttribute('onclick', `openPopup('${type}', 'table-${id}')`);
-                const table = element.appendChild(document.createElement('table'));
-                table.setAttribute('id', `table-${id}`);
-                table.setAttribute('class', 'table');
-                const tr = table.appendChild(document.createElement('tr'));
-                const stcolumn = tr.appendChild(document.createElement('th'));
-                stcolumn.setAttribute('style', 'width:80%;');
-                stcolumn.innerText = type;
-                const ndcolumn = tr.appendChild(document.createElement('th'));
-                ndcolumn.setAttribute('style', 'width:20%;');
-                ndcolumn.innerText = 'id';
-            }
-            let element = document.getElementById('config');
-            element = element.appendChild(document.createElement('div'));
-            element.setAttribute('class', 'item');
-            element.setAttribute('style', 'cursor:pointer;');
-            element.setAttribute('onclick', `showDropdown('${name}')`);
-            element.setAttribute('id', `item-${name}`);
-            let title = element.appendChild(document.createElement('div'));
-            title.setAttribute('id', `title-${name}`);
-            title.innerText = name;
-            element = element.appendChild(document.createElement('div'));
-            element.setAttribute('class', 'content');
-            element.setAttribute('style', 'display: none;');
-            element.setAttribute('id', `tableContainer-${name}`);
-            createList(`tableContainer-${name}`, type);
-        }
-
-        let form = document.createElement('form');
-        //form.innerText = '';
-        form.setAttribute('id', 'config');
-        form = document.getElementById('scriptTools').appendChild(form);
-        form.appendChild(document.createElement('br'));
-        createInput('MAX_PODS', 90, 0, 100); // number
-        createInput('MIN_MONSTERS', 1, 0, 8); // number
-        createInput('MAX_MONSTERS', 8, 0, 8); // number
-        createInput('MIN_MONSTERS_LEVEL', 1, 0); // number
-        createInput('MAX_MONSTERS_LEVEL', 1000, 0); // number
-        createInput('MAX_FIGHTS_PER_MAP', undefined, 0); // number
-        createInput('BANK_PUT_KAMAS', undefined, 0); // number
-        createInput('BANK_GET_KAMAS', undefined, 0); // number
-        createCheckbox('OPEN_BAGS'); // boolean
-        createCheckbox('DISPLAY_GATHER_COUNT'); // boolean
-        createCheckbox('DISPLAY_FIGHT_COUNT'); // boolean
-        createDropdownTable('FORBIDDEN_MONSTERS', 'monster'); // Array<monstersIds>
-        createDropdownTable('MANDATORY_MONSTERS', 'monster'); // Array<monstersIds>
-        createDropdownTable('ELEMENTS_TO_GATHER', 'resource'); // Array<resourcesIds>
-        createDropdownTable('BANK_PUT_ITEMS', 'item'); // Array<itemsIds>
-        createDropdownTable('BANK_GET_ITEMS', 'item'); // Array<itemsIds>
-        createDropdownTable('AUTO_REGEN', 'item'); // Array<itemsIds>
-        createDropdownTable('AUTO_DELETE', 'item'); // Array<itemsIds>
+        let element = document.getElementById('config');
+        element = element.appendChild(document.createElement('div'));
+        element.setAttribute('class', 'item');
+        element.setAttribute('style', 'cursor:pointer;');
+        element.setAttribute('onclick', `showDropdown('${name}')`);
+        element.setAttribute('id', `item-${name}`);
+        let title = element.appendChild(document.createElement('div'));
+        title.setAttribute('id', `title-${name}`);
+        title.innerText = name;
+        element = element.appendChild(document.createElement('div'));
+        element.setAttribute('class', 'content');
+        element.setAttribute('style', 'display: none;');
+        element.setAttribute('id', `tableContainer-${name}`);
+        createList(`tableContainer-${name}`, type);
     }
-    config();
 
-    function getValues() {
-        function getInput(id) {
-            const input = document.getElementById(id);
-            if (input.value !== input.defaultValue && input.value !== undefined) {
-                //
-            }
+    let form = document.createElement('form');
+    //form.innerText = '';
+    form.setAttribute('id', 'config');
+    form = document.getElementById('scriptTools').appendChild(form);
+    form.appendChild(document.createElement('br'));
+    createInput('MAX_PODS', 90, 0, 100);
+    createInput('MIN_MONSTERS', 1, 0, 8);
+    createInput('MAX_MONSTERS', 8, 0, 8);
+    createInput('MIN_MONSTERS_LEVEL', 1, 0);
+    createInput('MAX_MONSTERS_LEVEL', 1000, 0);
+    createInput('MAX_FIGHTS_PER_MAP', undefined, 0);
+    createInput('BANK_PUT_KAMAS', undefined, 0);
+    createInput('BANK_GET_KAMAS', undefined, 0);
+    createCheckbox('OPEN_BAGS');
+    createCheckbox('DISPLAY_GATHER_COUNT');
+    createCheckbox('DISPLAY_FIGHT_COUNT');
+    createDropdownTable('FORBIDDEN_MONSTERS', 'monster');
+    createDropdownTable('MANDATORY_MONSTERS', 'monster');
+    createDropdownTable('ELEMENTS_TO_GATHER', 'resource');
+    createDropdownTable('BANK_PUT_ITEMS', 'item');
+    createDropdownTable('BANK_GET_ITEMS', 'item');
+    createDropdownTable('AUTO_REGEN', 'item');
+    createDropdownTable('AUTO_DELETE', 'item');
+}
+
+function configGetValues() {
+    function getInput(id) {
+        const input = document.getElementById(id);
+        if (input.value !== input.defaultValue && input.value !== undefined) {
+            return input.value;
         }
-
-        function getCheckbox(id) {
-            if (document.getElementById(id).checked) {
-                //
-            }
-        }
-
-        //function getTable(id) {
-            //const id = document.getElementById(`tableContainer-${id}`).innerHTML.replace('<li>', '').split('</li>').slice(0, -1);
-            //if (id.length > 0) {
-                //id.forEach((value, index) => {
-                    //id[index] = value.replace('<li>', '');
-                //})
-                //
-            //}
-        //}
-        getInput('MAX_PODS');
-        getInput('MIN_MONSTERS');
-        getInput('MAX_MONSTERS');
-        getInput('MIN_MONSTERS_LEVEL');
-        getInput('MAX_MONSTERS_LEVEL');
-        getInput('MAX_FIGHTS_PER_MAP');
-        getInput('BANK_PUT_KAMAS');
-        getInput('BANK_GET_KAMAS');
-        getCheckbox('OPEN_BAGS');
-        getCheckbox('DISPLAY_GATHER_COUNT');
-        getCheckbox('DISPLAY_FIGHT_COUNT');
-        //getTable('FORBIDDEN_MONSTERS');
-        //getTable('MANDATORY_MONSTERS');
-        //getTable('ELEMENTS_TO_GATHER');
-        //getTable('BANK_PUT_ITEMS');
-        //getTable('BANK_GET_ITEMS');
-        //getTable('AUTO_REGEN');
-        //getTable('AUTO_DELETE');
     }
+
+    function getCheckbox(id) {
+        if (document.getElementById(id).checked) {
+            return document.getElementById(id).checked;
+        }
+    }
+
+    function getTable(id) {
+        let array = [];
+        const elements = document.getElementById(`table-tableContainer-${id}`).getElementsByTagName('tr');
+        for (var i = 1; i < elements.length; i++) {
+            array.push(parseInt(elements[i].children[1].innerText));
+        }
+        if (array.length > 0) {
+            return array;
+        }
+    }
+
+    const MAX_PODS = getInput('MAX_PODS');
+    const MIN_MONSTERS = getInput('MIN_MONSTERS');
+    const MAX_MONSTERS = getInput('MAX_MONSTERS');
+    const MIN_MONSTERS_LEVEL = getInput('MIN_MONSTERS_LEVEL');
+    const MAX_MONSTERS_LEVEL = getInput('MAX_MONSTERS_LEVEL');
+    const MAX_FIGHTS_PER_MAP = getInput('MAX_FIGHTS_PER_MAP');
+    const BANK_PUT_KAMAS = getInput('BANK_PUT_KAMAS');
+    const BANK_GET_KAMAS = getInput('BANK_GET_KAMAS');
+    const OPEN_BAGS = getCheckbox('OPEN_BAGS');
+    const DISPLAY_GATHER_COUNT = getCheckbox('DISPLAY_GATHER_COUNT');
+    const DISPLAY_FIGHT_COUNT = getCheckbox('DISPLAY_FIGHT_COUNT');
+    const FORBIDDEN_MONSTERS = getTable('FORBIDDEN_MONSTERS');
+    const MANDATORY_MONSTERS = getTable('MANDATORY_MONSTERS');
+    const ELEMENTS_TO_GATHER = getTable('ELEMENTS_TO_GATHER');
+    const BANK_PUT_ITEMS = getTable('BANK_PUT_ITEMS');
+    const BANK_GET_ITEMS = getTable('BANK_GET_ITEMS');
+    const AUTO_REGEN = getTable('AUTO_REGEN');
+    const AUTO_DELETE = getTable('AUTO_DELETE');
 }
 
 function showDropdown(id) {

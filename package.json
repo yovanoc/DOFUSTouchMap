@@ -2,9 +2,9 @@
   "name": "dofustouchmap",
   "version": "1.0.0",
   "description": "DofusTouch Map",
-  "main": "main.js",
+  "main": "js/main.js",
   "scripts": {
-    "start": "electron main.js --devmode",
+    "start": "electron js/main.js --devmode",
     "dist-mac": "build --mac",
     "dist-linux": "build --linux --x64 --ia32",
     "dist-win": "build --win --x64 --ia32",
