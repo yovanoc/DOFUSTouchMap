@@ -120,16 +120,23 @@ function init() {
             span.setAttribute('class', 'checkbox-span');
         }
 
-        function createDropdownList(name, type) {
+        function createDropdownTable(name, type) {
             function createList(id, type) {
                 let element = document.getElementById(id);
                 const button = element.appendChild(document.createElement('div'));
                 button.innerText = `Add ${type}`
                 button.setAttribute('class', 'button button-primary');
-                button.setAttribute('onclick', `openPopup('${type}', 'ul-${id}')`);
-                element = element.appendChild(document.createElement('nav'));
-                element = element.appendChild(document.createElement('ul'));
-                element.setAttribute('id', `ul-${id}`);
+                button.setAttribute('onclick', `openPopup('${type}', 'table-${id}')`);
+                const table = element.appendChild(document.createElement('table'));
+                table.setAttribute('id', `table-${id}`);
+                table.setAttribute('class', 'table');
+                const tr = table.appendChild(document.createElement('tr'));
+                const stcolumn = tr.appendChild(document.createElement('th'));
+                stcolumn.setAttribute('style', 'width:80%;');
+                stcolumn.innerText = type;
+                const ndcolumn = tr.appendChild(document.createElement('th'));
+                ndcolumn.setAttribute('style', 'width:20%;');
+                ndcolumn.innerText = 'id';
             }
             let element = document.getElementById('config');
             element = element.appendChild(document.createElement('div'));
@@ -143,8 +150,8 @@ function init() {
             element = element.appendChild(document.createElement('div'));
             element.setAttribute('class', 'content');
             element.setAttribute('style', 'display: none;');
-            element.setAttribute('id', `display-${name}`);
-            createList(`display-${name}`, type);
+            element.setAttribute('id', `tableContainer-${name}`);
+            createList(`tableContainer-${name}`, type);
         }
 
         let form = document.createElement('form');
@@ -163,13 +170,13 @@ function init() {
         createCheckbox('OPEN_BAGS'); // boolean
         createCheckbox('DISPLAY_GATHER_COUNT'); // boolean
         createCheckbox('DISPLAY_FIGHT_COUNT'); // boolean
-        createDropdownList('FORBIDDEN_MONSTERS', 'monster'); // Array<monstersIds>
-        createDropdownList('MANDATORY_MONSTERS', 'monster'); // Array<monstersIds>
-        createDropdownList('ELEMENTS_TO_GATHER', 'resource'); // Array<resourcesIds>
-        createDropdownList('BANK_PUT_ITEMS', 'item'); // Array<itemsIds>
-        createDropdownList('BANK_GET_ITEMS', 'item'); // Array<itemsIds>
-        createDropdownList('AUTO_REGEN', 'item'); // Array<itemsIds>
-        createDropdownList('AUTO_DELETE', 'item'); // Array<itemsIds>
+        createDropdownTable('FORBIDDEN_MONSTERS', 'monster'); // Array<monstersIds>
+        createDropdownTable('MANDATORY_MONSTERS', 'monster'); // Array<monstersIds>
+        createDropdownTable('ELEMENTS_TO_GATHER', 'resource'); // Array<resourcesIds>
+        createDropdownTable('BANK_PUT_ITEMS', 'item'); // Array<itemsIds>
+        createDropdownTable('BANK_GET_ITEMS', 'item'); // Array<itemsIds>
+        createDropdownTable('AUTO_REGEN', 'item'); // Array<itemsIds>
+        createDropdownTable('AUTO_DELETE', 'item'); // Array<itemsIds>
     }
     config();
 
@@ -187,15 +194,15 @@ function init() {
             }
         }
 
-        function getList(id) {
-            const id = document.getElementById(`ul-display-${id}`).innerHTML.replace('<li>', '').split('</li>').slice(0, -1);
-            if (id.length > 0) {
-                id.forEach((value, index) => {
-                    id[index] = value.replace('<li>', '');
-                })
+        //function getTable(id) {
+            //const id = document.getElementById(`tableContainer-${id}`).innerHTML.replace('<li>', '').split('</li>').slice(0, -1);
+            //if (id.length > 0) {
+                //id.forEach((value, index) => {
+                    //id[index] = value.replace('<li>', '');
+                //})
                 //
-            }
-        }
+            //}
+        //}
         getInput('MAX_PODS');
         getInput('MIN_MONSTERS');
         getInput('MAX_MONSTERS');
@@ -207,13 +214,13 @@ function init() {
         getCheckbox('OPEN_BAGS');
         getCheckbox('DISPLAY_GATHER_COUNT');
         getCheckbox('DISPLAY_FIGHT_COUNT');
-        getList('FORBIDDEN_MONSTERS');
-        getList('MANDATORY_MONSTERS');
-        getList('ELEMENTS_TO_GATHER');
-        getList('BANK_PUT_ITEMS');
-        getList('BANK_GET_ITEMS');
-        getList('AUTO_REGEN');
-        getList('AUTO_DELETE');
+        //getTable('FORBIDDEN_MONSTERS');
+        //getTable('MANDATORY_MONSTERS');
+        //getTable('ELEMENTS_TO_GATHER');
+        //getTable('BANK_PUT_ITEMS');
+        //getTable('BANK_GET_ITEMS');
+        //getTable('AUTO_REGEN');
+        //getTable('AUTO_DELETE');
     }
 }
 
@@ -224,7 +231,7 @@ function showDropdown(id) {
     const title = document.getElementById(`title-${id}`);
     title.setAttribute('onclick', `hideDropdown('${id}')`);
     title.setAttribute('class', 'title');
-    document.getElementById(`display-${id}`).setAttribute('style', 'display:initial; cursor:initial;');
+    document.getElementById(`tableContainer-${id}`).setAttribute('style', 'display:initial; cursor:initial;');
 }
 
 function hideDropdown(id) {
@@ -233,7 +240,7 @@ function hideDropdown(id) {
     item.setAttribute('style', 'cursor:pointer;');
     const title = document.getElementById(`title-${id}`);
     title.removeAttribute('onclick');
-    document.getElementById(`display-${id}`).setAttribute('style', 'display:none;');
+    document.getElementById(`tableContainer-${id}`).setAttribute('style', 'display:none;');
 }
 
 function fixBugHide(id) { // hideDropdown calls directly showDropdown, so the dropdown never hide.
@@ -254,18 +261,12 @@ function openPopup(type, id) {
     searchBar.setAttribute('type', 'search');
     searchBar.setAttribute('class', 'search-bar');
     searchBar.setAttribute('placeholder', `Search for ${type}...`);
-    if (type === 'item') {
-        searchBar.setAttribute('placeholder', `Search might take a moment because ${type} has a huuuuge list of ids...`);
-    } else {
-        searchBar.setAttribute('placeholder', `Search for ${type}...`);
-    }
     searchBar.setAttribute('id', 'searchid');
     const tableContainer = element.appendChild(document.createElement('div'));
     tableContainer.setAttribute('class', 'tableContainer');
     const table = tableContainer.appendChild(document.createElement('table'));
     table.setAttribute('id', 'tableid');
     const tr = table.appendChild(document.createElement('tr'));
-    tr.setAttribute('class', 'header'); // TODO
     const stcolumn = tr.appendChild(document.createElement('th'));
     stcolumn.setAttribute('style', 'width:80%;');
     stcolumn.innerText = type;
@@ -298,12 +299,13 @@ function openPopup(type, id) {
     quit.innerText = 'Quit';
     const save = element.appendChild(document.createElement('div'));
     save.setAttribute('class', 'button button-success search-button-save');
-    save.setAttribute('onclick', `saveAndClose('${type}', '${id}')`);
+    save.setAttribute('onclick', `saveAndClose('${id}')`);
     save.innerText = 'Save';
     element = document.getElementById('tableid');
     Object.keys(ids).forEach((name, index) => {
         const tr = element.appendChild(document.createElement('tr'));
-        tr.setAttribute('id', 'index');
+        tr.setAttribute('id', `${name}`);
+        tr.setAttribute('onclick', `select("${name}")`);
         const stcolumn = tr.appendChild(document.createElement('th'));
         stcolumn.innerText = name;
         const ndcolumn = tr.appendChild(document.createElement('th'));
@@ -314,12 +316,30 @@ function openPopup(type, id) {
     });
 }
 
+function select(name) {
+    const element = document.getElementById(name)
+    element.setAttribute('class', 'selected');
+    element.setAttribute('onclick', `unselect("${name}")`);
+}
+
+function unselect(name) {
+    const element = document.getElementById(name)
+    element.removeAttribute('class');
+    element.setAttribute('onclick', `select("${name}")`);
+}
+
 function saveAndClose(id) {
-    function addLi(name) {
-        let element = document.getElementById(id);
-        element = element.appendChild(document.createElement('li'));
-        element.innerText = name;
+    function addTableElement(name, itemid) {
+        // TODO Check if element is already existing in table
+        const tr = document.getElementById(id).appendChild(document.createElement('tr'));
+        const stcolumn = tr.appendChild(document.createElement('th'));
+        stcolumn.innerText = name;
+        const ndcolumn = tr.appendChild(document.createElement('th'));
+        ndcolumn.innerText = itemid
     }
-    // Get all ids in popup as array, then foreach element addli
+
+    Array.prototype.slice.call(document.getElementsByClassName('selected')).forEach((element) => {
+        addTableElement(element.children[0].innerText, element.children[1].innerText);
+    });
     document.getElementsByTagName('body')[0].removeChild(document.getElementById('search-container'));
 }

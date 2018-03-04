@@ -344,7 +344,7 @@ ul {
     overflow-y: scroll;
 }
 
-#tableid {
+#tableid, .table {
     border-collapse: collapse;
     border: 1px solid #ddd;
     width: 100%;
@@ -352,18 +352,22 @@ ul {
     table-layout: fixed;
 }
 
-#tableid th, #tableid td {
+#tableid th, #tableid td, .table th, .table td {
     padding: 10px;
 }
 
-#tableid th {
+#tableid th, .table th {
     border-left: 1px solid #ddd;
 }
 
-#tableid tr {
+#tableid tr, .table tr {
     border-bottom: 1px solid #ddd; 
 }
 
-#tableid tr.header, #tableid tr:hover {
+#tableid tr.header, #tableid tr:hover, .table tr.header, .table tr:hover {
     background-color: #f1f1f1;
+}
+
+.selected, .selected tr:hover {
+    background-color: #007bff !important;
 }
