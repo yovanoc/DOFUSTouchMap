@@ -32,23 +32,6 @@ function config() {
     }
 
     function createDropdownTable(name, type) {
-        function createList(id, type) {
-            let element = document.getElementById(id);
-            const button = element.appendChild(document.createElement('div'));
-            button.innerText = `Add ${type}`
-            button.setAttribute('class', 'button button-primary');
-            button.setAttribute('onclick', `openPopup('${type}', 'table-${id}')`);
-            const table = element.appendChild(document.createElement('table'));
-            table.setAttribute('id', `table-${id}`);
-            table.setAttribute('class', 'table');
-            const tr = table.appendChild(document.createElement('tr'));
-            const stcolumn = tr.appendChild(document.createElement('th'));
-            stcolumn.setAttribute('style', 'width:80%;');
-            stcolumn.innerText = type;
-            const ndcolumn = tr.appendChild(document.createElement('th'));
-            ndcolumn.setAttribute('style', 'width:20%;');
-            ndcolumn.innerText = 'id';
-        }
         let element = document.getElementById('config');
         element = element.appendChild(document.createElement('div'));
         element.setAttribute('class', 'item');
@@ -62,13 +45,25 @@ function config() {
         element.setAttribute('class', 'content');
         element.setAttribute('style', 'display: none;');
         element.setAttribute('id', `tableContainer-${name}`);
-        createList(`tableContainer-${name}`, type);
+        element = document.getElementById(`tableContainer-${name}`);
+        const button = element.appendChild(document.createElement('div'));
+        button.innerText = `Add ${type}`
+        button.setAttribute('class', 'button button-primary');
+        button.setAttribute('onclick', `openPopup('${type}', 'table-tableContainer-${name}')`);
+        const table = element.appendChild(document.createElement('table'));
+        table.setAttribute('id', `table-tableContainer-${name}`);
+        table.setAttribute('class', 'table');
+        const tr = table.appendChild(document.createElement('tr'));
+        const stcolumn = tr.appendChild(document.createElement('th'));
+        stcolumn.setAttribute('style', 'width:80%;');
+        stcolumn.innerText = type;
+        const ndcolumn = tr.appendChild(document.createElement('th'));
+        ndcolumn.setAttribute('style', 'width:20%;');
+        ndcolumn.innerText = 'id';
     }
 
-    let form = document.createElement('form');
-    //form.innerText = '';
+    const form = document.getElementById('scriptTools').appendChild(document.createElement('form'));
     form.setAttribute('id', 'config');
-    form = document.getElementById('scriptTools').appendChild(form);
     form.appendChild(document.createElement('br'));
     createInput('MAX_PODS', 90, 0, 100);
     createInput('MIN_MONSTERS', 1, 0, 8);
@@ -90,10 +85,12 @@ function config() {
     createDropdownTable('AUTO_DELETE', 'item');
 }
 
-function configGetValues() {
+function getValues() {
+    //const { writeFileSync } = require('fs');
+    
     function getInput(id) {
         const input = document.getElementById(id);
-        if (input.value !== input.defaultValue && input.value !== undefined) {
+        if (input.value !== input.defaultValue && input.value !== undefined && input.value >= 0) {
             return input.value;
         }
     }
@@ -115,24 +112,98 @@ function configGetValues() {
         }
     }
 
+    let config = `const config = {
+    `;
+
     const MAX_PODS = getInput('MAX_PODS');
+    if (MAX_PODS) config += `MAX_PODS: ${MAX_PODS},
+    `;
+
     const MIN_MONSTERS = getInput('MIN_MONSTERS');
+    if (MIN_MONSTERS) config += `MIN_MONSTERS: ${MIN_MONSTERS},
+    `;
+
     const MAX_MONSTERS = getInput('MAX_MONSTERS');
+    if (MAX_MONSTERS) config += `MAX_MONSTERS: ${MAX_MONSTERS},
+    `;
+
     const MIN_MONSTERS_LEVEL = getInput('MIN_MONSTERS_LEVEL');
+    if (MIN_MONSTERS_LEVEL) config += `MIN_MONSTERS_LEVEL: ${MIN_MONSTERS_LEVEL},
+    `;
+
     const MAX_MONSTERS_LEVEL = getInput('MAX_MONSTERS_LEVEL');
+    if (MAX_MONSTERS_LEVEL) config += `MAX_MONSTERS_LEVEL: ${MAX_MONSTERS_LEVEL},
+    `;
+
     const MAX_FIGHTS_PER_MAP = getInput('MAX_FIGHTS_PER_MAP');
+    if (MAX_FIGHTS_PER_MAP) config += `MAX_FIGHTS_PER_MAP: ${MAX_FIGHTS_PER_MAP},
+    `;
+
     const BANK_PUT_KAMAS = getInput('BANK_PUT_KAMAS');
+    if (BANK_PUT_KAMAS) config += `BANK_PUT_KAMAS: ${BANK_PUT_KAMAS},
+    `;
+
     const BANK_GET_KAMAS = getInput('BANK_GET_KAMAS');
+    if (BANK_GET_KAMAS) config += `BANK_GET_KAMAS: ${BANK_GET_KAMAS},
+    `;
+
     const OPEN_BAGS = getCheckbox('OPEN_BAGS');
+    if (OPEN_BAGS) config += `OPEN_BAGS: ${OPEN_BAGS},
+    `;
+
     const DISPLAY_GATHER_COUNT = getCheckbox('DISPLAY_GATHER_COUNT');
+    if (DISPLAY_GATHER_COUNT) config += `DISPLAY_GATHER_COUNT: ${DISPLAY_GATHER_COUNT},
+    `;
+
     const DISPLAY_FIGHT_COUNT = getCheckbox('DISPLAY_FIGHT_COUNT');
+    if (DISPLAY_FIGHT_COUNT) config += `DISPLAY_FIGHT_COUNT: ${DISPLAY_FIGHT_COUNT},
+    `;
+
     const FORBIDDEN_MONSTERS = getTable('FORBIDDEN_MONSTERS');
+    if (FORBIDDEN_MONSTERS) config += `FORBIDDEN_MONSTERS: [${FORBIDDEN_MONSTERS}],
+    `;
+
     const MANDATORY_MONSTERS = getTable('MANDATORY_MONSTERS');
+    if (MANDATORY_MONSTERS) config += `MANDATORY_MONSTERS: [${MANDATORY_MONSTERS}],
+    `;
+
     const ELEMENTS_TO_GATHER = getTable('ELEMENTS_TO_GATHER');
+    if (ELEMENTS_TO_GATHER) config += `ELEMENTS_TO_GATHER: [${ELEMENTS_TO_GATHER}],
+    `;
+
     const BANK_PUT_ITEMS = getTable('BANK_PUT_ITEMS');
+    if (BANK_PUT_ITEMS) { // TODO get quantity
+        config += `BANK_PUT_ITEMS: [
+        `;
+        BANK_PUT_ITEMS.forEach((id) => {
+            config += `{ item: ${id}, quantity: 1 },
+        `;
+        })
+        config += `],
+    `;
+    }
+
     const BANK_GET_ITEMS = getTable('BANK_GET_ITEMS');
+    if (BANK_GET_ITEMS) { // TODO get quantity
+        config += `BANK_GET_ITEMS: [
+        `;
+        BANK_GET_ITEMS.forEach((id) => {
+            config += `{ item: ${id}, quantity: 1 },
+        `;
+        })
+        config += `],
+    `;
+    }
+
     const AUTO_REGEN = getTable('AUTO_REGEN');
+    if (AUTO_REGEN) config += `AUTO_REGEN: [${AUTO_REGEN}],
+    `;
+
     const AUTO_DELETE = getTable('AUTO_DELETE');
+    if (AUTO_DELETE) config += `AUTO_DELETE: [${AUTO_DELETE}],
+    `;
+    config += `}`;
+    //writeFileSync(__dirname + '/script.js', config);
 }
 
 function showDropdown(id) {
@@ -241,12 +312,25 @@ function unselect(name) {
 
 function saveAndClose(id) {
     function addTableElement(name, itemid) {
-        // TODO Check if element is already existing in table
-        const tr = document.getElementById(id).appendChild(document.createElement('tr'));
-        const stcolumn = tr.appendChild(document.createElement('th'));
-        stcolumn.innerText = name;
-        const ndcolumn = tr.appendChild(document.createElement('th'));
-        ndcolumn.innerText = itemid
+        function isInTable() {
+            const elements = document.getElementById(id).getElementsByTagName('tr');
+            let inTable = false;
+            for (var i = 1; i < elements.length; i++) {
+                if (elements[i].children[1].innerText === itemid) {
+                    inTable = true;
+                    break;
+                }
+            }
+            return inTable;
+        }
+
+        if (!isInTable()) {
+            const tr = document.getElementById(id).appendChild(document.createElement('tr'));
+            const stcolumn = tr.appendChild(document.createElement('th'));
+            stcolumn.innerText = name;
+            const ndcolumn = tr.appendChild(document.createElement('th'));
+            ndcolumn.innerText = itemid
+        }
     }
 
     Array.prototype.slice.call(document.getElementsByClassName('selected')).forEach((element) => {
