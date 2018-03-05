@@ -2,6 +2,7 @@ function mainMenu() {
     let element = document.getElementsByTagName('body')[0];
     element = element.appendChild(document.createElement('div'));
     element.setAttribute('id', 'mainMenu');
+    element.setAttribute('style', 'overflow:hidden');
     const title = element.appendChild(document.createElement('title'));
     title.setAttribute('class', 'mainTitle');
     title.innerText = 'CookieTouch Script Creator';
@@ -11,15 +12,15 @@ function mainMenu() {
     const loadScript = element.appendChild(document.createElement('div'));
     loadScript.setAttribute('class', 'button button-outline-success mainButton');
     loadScript.setAttribute('onclick', 'showEditScript()');
-    loadScript.innerText = 'Load script...'
+    loadScript.innerText = 'Load script...';
     const createScript = element.appendChild(document.createElement('div'));
     createScript.setAttribute('class', 'button button-outline-warning mainButton secondMainButton');
     createScript.setAttribute('onclick', 'showCreateScript()');
-    createScript.innerText = 'Create script'
+    createScript.innerText = 'Create script';
     const documentation = element.appendChild(document.createElement('div'));
     documentation.setAttribute('class', 'button button-outline-danger mainButton docButton');
     documentation.setAttribute('onclick', 'location.href="https://ehstrali.gitbooks.io/cookietouch/content/"');
-    documentation.innerText = 'View script documentation'
+    documentation.innerText = 'View script documentation';
     const github = element.appendChild(document.createElement('img'));
     github.setAttribute('src', 'img/GitHub-Mark.png');
     github.setAttribute('onclick', 'location.href="https://github.com/yovanoc/cookietouch"');
@@ -37,17 +38,13 @@ function mainMenu() {
 function showCreateScript() {
     let element = document.getElementsByTagName('body')[0];
     element.removeChild(document.getElementById('mainMenu'));
-    element.appendChild(document.createElement('div')).setAttribute('id', 'map');
-    element.appendChild(document.createElement('div')).setAttribute('class', 'menu');
-    element = element.appendChild(document.createElement('div'))
-    element.setAttribute('class', 'menu-lateral');
+    element = element.appendChild(document.createElement('div'));
+    element.setAttribute('id', 'scriptTools');
+    /*
     const p = element.appendChild(document.createElement('p'));
     p.setAttribute('align', 'center');
     p.setAttribute('id', 'coords');
-    p.innerText = '[0,0]';
-    const scriptTools = element.appendChild(document.createElement('div'));
-    scriptTools.setAttribute('id', 'scriptTools');
-    map();
+    p.innerText = '[0,0]'; */
     config();
     // TODO create a menu for config.
 }

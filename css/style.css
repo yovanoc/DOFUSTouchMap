@@ -1,10 +1,9 @@
 html, body, #map {
     width: 100%;
     height: 100%;
-    padding: 0;
     margin: 0;
-    overflow: hidden;
     font-family: Roboto, sans-serif;
+    background-color: ghostwhite;
 }
 
 label {
@@ -13,11 +12,10 @@ label {
 
 input {
     font-size: 18px;
-    padding: 10px 15px 10px 5px;
+    padding: 10px;
     display: block;
     position: relative;
     width: 27%;
-    text-align: left;
     border: none;
     color: #838383;
     border-bottom: 1px solid #757575;
@@ -28,14 +26,14 @@ input {
 
 input:focus, input:focus:hover {
     outline: none;
-    border-bottom: 2px solid #5264AE;
+    border-bottom: 2px solid #007bff;
     margin-bottom: 9px;
     box-shadow: 4px 4px 8px rgba(0, 0, 0, .26);
 }
 
 input:hover {
     outline: none;
-    border-bottom: 2px solid #5264AE;
+    border-bottom: 2px solid #007bff;
     margin-bottom: 9px;
     box-shadow: 3px 3px 6px rgba(0, 0, 0, .26);
 }
@@ -43,8 +41,7 @@ input:hover {
 #map {
     z-index: 3;
     position: absolute;
-    right: 30%;
-    bottom: 25%;
+    bottom: 40%;
     width: 100%;
     height: 100%;
     box-shadow: 4px 4px 9px rgba(0, 0, 0, .26);
@@ -52,8 +49,9 @@ input:hover {
 
 #coords {
     position: fixed;
+    text-align: center;
     width: 8%;
-    left: 81%;
+    left: 46%;
     top: 4px;
     margin: auto;
     padding: 2px;
@@ -66,35 +64,14 @@ input:hover {
     z-index: 10;
 }
 
-#scriptTools {
-    margin: 30px 0 0 10px;
-    overflow-y: scroll;
-}
-
 #OPEN_BAGS, #DISPLAY_GATHER_COUNT, #DISPLAY_FIGHT_COUNT {
     box-shadow: none;
     margin: 0 0 7px 0;
 }
 
-.menu {
-    z-index: 2;
-    position: absolute;
-    top: 75%;
-    right: 30%;
-    width: 100%;
+#scriptTools {
     height: 100%;
-    background-color: white;
-    box-shadow: 4px 4px 9px rgba(0, 0, 0, .26);
-}
-
-.menu-lateral {
-    z-index: 1;
-    position: fixed;
-    left: 70%;
     width: 100%;
-    height: 100%;
-    background-color: whitesmoke;
-    overflow: scroll;
 }
 
 .leaflet-control-container {
@@ -144,15 +121,15 @@ input:hover {
 }
 
 .checkbox .input-checkbox input[type='checkbox']:hover + .checkbox-span:before {
-    border: 2px solid #03a9f4;
+    border: 2px solid #007bff;
     box-shadow: 3px 3px 6px rgba(0, 0, 0, .26);
 }
 
 .checkbox .input-checkbox input[type='checkbox']:checked + .checkbox-span:before {
     content: '✓';
     color: whitesmoke;
-    background-color: #03a9f4;
-    border: 2px solid #03a9f4;
+    background-color: #007bff;
+    border: 2px solid #007bff;
     box-shadow: 4px 4px 8px rgba(0, 0, 0, .26);
 }
 
@@ -161,15 +138,16 @@ input:hover {
     box-shadow: 2px 2px 4px rgba(0, 0, 0, .26);
     user-select: none;
     position: relative;
-    width: 29%;
+    width: 75%;
+    left: 12.5%;
     text-align: center;
     transition: all .3s ease;
     margin-bottom: 1rem;
-    padding: .1rem 0;
+    padding: 10px;
 }
 
 .item:hover, .item:focus {
-    color: rgb(90, 120, 240);
+    color: #007bff;
     box-shadow: 4px 4px 9px rgba(0, 0, 0, .26);
 }
 
@@ -182,7 +160,6 @@ ul {
 
 .button {
     position: relative;
-    background-color: #17a2b8;
     cursor: pointer;
     outline: none;
     font-size: 0.8rem;
@@ -192,6 +169,7 @@ ul {
     transition: .2s ease-out;
     color: white !important;
     margin: 9px;
+    text-align: center;
     white-space: normal !important;
     word-wrap: break-word;
     text-transform: uppercase;
@@ -221,7 +199,7 @@ ul {
 }
 
 .button-primary {	
-    background: #007bff;	
+    background: #007bff;
 }
 
 .button-primary:hover, .button-primary:focus {	
@@ -281,37 +259,37 @@ ul {
 }
 
 .button-outline-secondary {
-    background: transparent;
+    background: white;
     border: 1px solid #6c757d;
     color: black !important;
 }
   
 .button-outline-primary {
-    background: transparent;
+    background: white;
     border: 1px solid #007bff;
     color: black !important;
 }
   
 .button-outline-success {
-    background: transparent;
+    background: white;
     border: 1px solid #28a745;
     color: black !important;
 }
   
 .button-outline-info {
-    background: transparent;
+    background: white;
     border: 1px solid #17a2b8;
     color: black !important;
 }
   
 .button-outline-warning {
-    background: transparent;
+    background: white;
     border: 1px solid #ffc107;
     color: black !important;
 }
   
 .button-outline-danger {
-    background: transparent;
+    background: white;
     border: 1px solid #d43343;
     color: black !important;
 }
@@ -342,11 +320,10 @@ ul {
 
 .mainTitle {
     position: relative;
-    margin-top: 3%;
+    margin-top: 2%;
     font-size: 350%;
     display: grid;
     justify-content: center;
-    align-content: center;
 }
 
 .title:hover, .title:active, .title:focus {
@@ -356,7 +333,8 @@ ul {
 
 .search-container {
     z-index: 20;
-    position: absolute;
+    position: fixed;
+    top: 0;
     height: 100%;
     width: 100%;
     background-color: rgba(0,0,0,0.4);

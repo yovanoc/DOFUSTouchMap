@@ -1,5 +1,8 @@
-
 function map() {
+    let div = document.getElementsByTagName('body')[0];
+    div = div.appendChild(document.createElement('div'));
+    div.setAttribute('id', 'coords');
+    div.innerText = '[0,0]';
     const minZoom = 1;
     const maxZoom = 1; // maxZoom = minZoom, because it's kinda buggy somehow
     // create the map
@@ -13,20 +16,20 @@ function map() {
     const cellheight = 4096 / 161; // 4096 = 2x2048 (lat of the map's center). 161 = Number of map between left and right
     const cellwidth = 5120 / 144; // 5120 = 2x2560 (lng of the map's center). 144 = Number of map between the top and the bottom
     let dofus = [];
-    dofus['lat'] = -cellheight * 100;
-    dofus['lng'] = cellwidth * 94 - cellwidth / 4.5;
+    dofus.lat = -cellheight * 100;
+    dofus.lng = cellwidth * 94 - cellwidth / 4.5;
 
     function mapXYtoDofusXY(latlng) {
         array = [];
-        array['lng'] = Math.round((latlng.lng - dofus['lng']) / cellwidth);
-        array['lat'] = Math.round((-latlng.lat + dofus['lat']) / cellheight);
+        array.lng = Math.round((latlng.lng - dofus.lng) / cellwidth);
+        array.lat = Math.round((-latlng.lat + dofus.lat) / cellheight);
         return array;
     }
 
     function dofusXYtomapXY(xy) {
         array = [];
-        array['lng'] = Math.round(xy['lng'] * cellwidth + dofus['lng']);
-        array['lat'] = Math.round(-(xy['lat'] * cellheight - dofus['lat']));
+        array.lng = Math.round(xy.lng * cellwidth + dofus.lng);
+        array.lat = Math.round(-(xy.lat * cellheight - dofus.lat));
         return array;
     }
 
@@ -57,31 +60,31 @@ function map() {
 
     map.on('mousemove', (mouseEvent) => {
         xy = mapXYtoDofusXY(mouseEvent.latlng);
-        if (((xy['lng'] !== storeXY['lng']) || (xy['lat'] !== storeXY['lat'])) && !focused) {
+        if (((xy.lng !== storeXY.lng) || (xy.lat !== storeXY.lat)) && !focused) {
             storeXY = xy;
             storeClick = []; // reset storeClick
             mapXY = dofusXYtomapXY(xy);
             if (marker.isActive) {
                 map.removeLayer(marker);
             }
-            marker = L.marker([mapXY['lat'], mapXY['lng']], { icon: rectangle }).addTo(map);  
+            marker = L.marker([mapXY.lat, mapXY.lng], { icon: rectangle }).addTo(map);  
             marker.isActive = true;
-            document.getElementById('coords').innerText = `[${xy['lng'].toString()},${xy['lat'].toString()}]`;
+            document.getElementById('coords').innerText = `[${xy.lng.toString()},${xy.lat.toString()}]`;
         }
     });
 
     map.on('click', (mouseEvent) => {
         xy = mapXYtoDofusXY(mouseEvent.latlng);
-        if ((xy['lng'] !== storeClick['lng']) || (xy['lat'] !== storeClick['lat'])) {
+        if ((xy.lng !== storeClick.lng) || (xy.lat !== storeClick.lat)) {
             storeClick = xy;
             focused = true;
             mapXY = dofusXYtomapXY(xy);
             if (marker.isActive) {
                 map.removeLayer(marker);
             }
-            marker = L.marker([mapXY['lat'], mapXY['lng']], { icon: rectangle }).addTo(map);  
+            marker = L.marker([mapXY.lat, mapXY.lng], { icon: rectangle }).addTo(map);  
             marker.isActive = true;
-            document.getElementById('coords').innerText = `[${xy['lng'].toString()},${xy['lat'].toString()}]`;
+            document.getElementById('coords').innerText = `[${xy.lng.toString()},${xy.lat.toString()}]`;
         } else {
             focused = false; // disable focus on click on a focused map
         }
