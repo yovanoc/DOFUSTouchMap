@@ -16,6 +16,20 @@ function map() {
     dofus['lat'] = -cellheight * 100;
     dofus['lng'] = cellwidth * 94 - cellwidth / 4.5;
 
+    function mapXYtoDofusXY(latlng) {
+        array = [];
+        array['lng'] = Math.round((latlng.lng - dofus['lng']) / cellwidth);
+        array['lat'] = Math.round((-latlng.lat + dofus['lat']) / cellheight);
+        return array;
+    }
+
+    function dofusXYtomapXY(xy) {
+        array = [];
+        array['lng'] = Math.round(xy['lng'] * cellwidth + dofus['lng']);
+        array['lat'] = Math.round(-(xy['lat'] * cellheight - dofus['lat']));
+        return array;
+    }
+
     const bounds = new L.LatLngBounds(map.unproject([0, 8192], maxZoom), map.unproject([10240, 0], maxZoom));
 
     map.fitBounds(bounds);
@@ -46,7 +60,7 @@ function map() {
         if (((xy['lng'] !== storeXY['lng']) || (xy['lat'] !== storeXY['lat'])) && !focused) {
             storeXY = xy;
             storeClick = []; // reset storeClick
-            mapXY = DofusXYtomapXY(xy);
+            mapXY = dofusXYtomapXY(xy);
             if (marker.isActive) {
                 map.removeLayer(marker);
             }
@@ -61,7 +75,7 @@ function map() {
         if ((xy['lng'] !== storeClick['lng']) || (xy['lat'] !== storeClick['lat'])) {
             storeClick = xy;
             focused = true;
-            mapXY = DofusXYtomapXY(xy);
+            mapXY = dofusXYtomapXY(xy);
             if (marker.isActive) {
                 map.removeLayer(marker);
             }
@@ -72,18 +86,4 @@ function map() {
             focused = false; // disable focus on click on a focused map
         }
     });
-
-    function mapXYtoDofusXY(latlng) {
-        array = [];
-        array['lng'] = Math.round((latlng.lng - dofus['lng']) / cellwidth);
-        array['lat'] = Math.round((-latlng.lat + dofus['lat']) / cellheight);
-        return array;
-    }
-
-    function DofusXYtomapXY(xy) {
-        array = [];
-        array['lng'] = Math.round(xy['lng'] * cellwidth + dofus['lng']);
-        array['lat'] = Math.round(-(xy['lat'] * cellheight - dofus['lat']));
-        return array;
-    }
 }

@@ -198,12 +198,12 @@ ul {
 }
 
 .button:hover {
-    box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.18);
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.18);
     color: white;
 }
 
 .button:active, .button:focus, .button.active {
-    box-shadow: 4px 4px 9px rgba(0, 0, 0, 0.18);
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.18);
     outline: 0;
     color: white;
 }
@@ -278,6 +278,75 @@ ul {
 
 .button-danger.active {	
     background-color: #9a202d !important;	
+}
+
+.button-outline-secondary {
+    background: transparent;
+    border: 1px solid #6c757d;
+    color: black !important;
+}
+  
+.button-outline-primary {
+    background: transparent;
+    border: 1px solid #007bff;
+    color: black !important;
+}
+  
+.button-outline-success {
+    background: transparent;
+    border: 1px solid #28a745;
+    color: black !important;
+}
+  
+.button-outline-info {
+    background: transparent;
+    border: 1px solid #17a2b8;
+    color: black !important;
+}
+  
+.button-outline-warning {
+    background: transparent;
+    border: 1px solid #ffc107;
+    color: black !important;
+}
+  
+.button-outline-danger {
+    background: transparent;
+    border: 1px solid #d43343;
+    color: black !important;
+}
+
+.mainButton {
+    position: absolute;
+    text-align: center;
+    font-size: 100%;
+    top: 53%;
+    height: 7%;
+    width: 30%;
+    left: 10%;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    flex-direction: column;
+}
+
+.secondMainButton {
+    left: 55%;
+}
+
+.docButton {
+    left: 10%;
+    width: 75%;
+    top: 65%;
+}
+
+.mainTitle {
+    position: relative;
+    margin-top: 3%;
+    font-size: 350%;
+    display: grid;
+    justify-content: center;
+    align-content: center;
 }
 
 .title:hover, .title:active, .title:focus {

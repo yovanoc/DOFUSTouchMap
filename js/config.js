@@ -47,7 +47,7 @@ function config() {
         element.setAttribute('id', `tableContainer-${name}`);
         element = document.getElementById(`tableContainer-${name}`);
         const button = element.appendChild(document.createElement('div'));
-        button.innerText = `Add ${type}`
+        button.innerText = `Add ${type}`;
         button.setAttribute('class', 'button button-primary');
         button.setAttribute('onclick', `openPopup('${type}', 'table-tableContainer-${name}')`);
         const table = element.appendChild(document.createElement('table'));
