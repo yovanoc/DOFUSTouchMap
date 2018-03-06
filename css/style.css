@@ -418,3 +418,19 @@ ul {
 .selected, .selected tr:hover {
     background-color: #007bff !important;
 }
+
+.containerPath {
+    position: relative;
+    top: 60%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 80% 20%;
+}
+
+#patheditor {
+    grid-column: 1;
+}
+
+.buttons {
+    grid-column: 2;
+}
