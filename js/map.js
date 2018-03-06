@@ -1,8 +1,8 @@
 function map() {
-    let div = document.getElementsByTagName('body')[0];
-    div = div.appendChild(document.createElement('div'));
-    div.setAttribute('id', 'coords');
-    div.innerText = '[0,0]';
+    let element = document.getElementsByTagName('body')[0];
+    element = element.appendChild(document.createElement('div'));
+    element.setAttribute('id', 'coords');
+    element.innerText = '[0,0]';
     const minZoom = 1;
     const maxZoom = 1; // maxZoom = minZoom, because it's kinda buggy somehow
     // create the map
@@ -12,6 +12,15 @@ function map() {
         zoom: 1,
         crs: L.CRS.Simple,
     });
+
+    let xy = [];
+    let storeXY = xy;
+    let storeClick = xy;
+    let mapXY = xy;
+    let marker = {};
+    let focused = false;
+    //let mapArray = []; // Array<{latlng:['lat': number,'lng':number], actions:{fight:boolean, gather:boolean}}>
+    let array;
 
     const cellheight = 4096 / 161; // 4096 = 2x2048 (lat of the map's center). 161 = Number of map between left and right
     const cellwidth = 5120 / 144; // 5120 = 2x2560 (lng of the map's center). 144 = Number of map between the top and the bottom
@@ -44,15 +53,6 @@ function map() {
         noWrap: false,
         bounds: bounds,
     }).addTo(map);
-
-    let xy = [];
-    let storeXY = xy;
-    let storeClick = xy;
-    let mapXY = xy;
-    let marker = {};
-    let focused = false;
-    //let mapArray = []; // Array<{latlng:['lat': number,'lng':number], actions:{fight:boolean, gather:boolean}}>
-    let array;
 
     const rectangle = L.divIcon({
         iconSize: [2 * cellwidth, 2 * cellheight]

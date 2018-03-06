@@ -17,7 +17,7 @@
   ],
   "author": "Eausa",
   "dependencies": {
-    "electron": "^1.8.2",
-    "electron-builder": "^20.2.0"
+    "electron": "beta",
+    "electron-builder": "^20.2.1"
   }
 }

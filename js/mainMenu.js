@@ -8,7 +8,7 @@ function mainMenu() {
     title.innerText = 'CookieTouch Script Creator';
     const cookie = element.appendChild(document.createElement('img'));
     cookie.setAttribute('src', 'img/cookie.png');
-    cookie.setAttribute('style', 'position:relative;width:20%;height:20%;left:40%;margin-top:2.5%;');
+    cookie.setAttribute('style', 'position:relative;width:22%;height:22%;left:38%;margin-top:2.5%;');
     const loadScript = element.appendChild(document.createElement('div'));
     loadScript.setAttribute('class', 'button button-outline-success mainButton');
     loadScript.setAttribute('onclick', 'showEditScript()');
@@ -24,15 +24,15 @@ function mainMenu() {
     const github = element.appendChild(document.createElement('img'));
     github.setAttribute('src', 'img/GitHub-Mark.png');
     github.setAttribute('onclick', 'location.href="https://github.com/yovanoc/cookietouch"');
-    github.setAttribute('width', '40');
-    github.setAttribute('height', '40');
-    github.setAttribute('style', 'position:absolute;bottom:3px;right:3px;cursor:pointer');
+    github.setAttribute('width', '36');
+    github.setAttribute('height', '36');
+    github.setAttribute('style', 'position:absolute;bottom:6px;right:7px;cursor:pointer');
     const discord = element.appendChild(document.createElement('img'));
     discord.setAttribute('src', 'img/Discord-Logo-Black.png');
     discord.setAttribute('onclick', 'location.href="https://discord.gg/qgd3qDQ"');
-    discord.setAttribute('width', '40');
-    discord.setAttribute('height', '40');
-    discord.setAttribute('style', 'position:absolute;bottom:3px;right:45px;cursor:pointer');
+    discord.setAttribute('width', '36');
+    discord.setAttribute('height', '36');
+    discord.setAttribute('style', 'position:absolute;bottom:6px;right:47px;cursor:pointer');
 }
 
 function showCreateScript() {
@@ -40,13 +40,7 @@ function showCreateScript() {
     element.removeChild(document.getElementById('mainMenu'));
     element = element.appendChild(document.createElement('div'));
     element.setAttribute('id', 'scriptTools');
-    /*
-    const p = element.appendChild(document.createElement('p'));
-    p.setAttribute('align', 'center');
-    p.setAttribute('id', 'coords');
-    p.innerText = '[0,0]'; */
     config();
-    // TODO create a menu for config.
 }
 
 function showEditScript() {

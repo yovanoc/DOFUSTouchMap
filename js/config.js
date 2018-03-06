@@ -99,7 +99,7 @@ function config() {
 function saveConfig() {    
     function getInput(id) {
         const input = document.getElementById(id);
-        if (input.value !== input.defaultValue && (input.value !== undefined || input.value >= 0)) {
+        if (input && (input.value !== input.defaultValue && (input.value !== undefined || input.value >= 0))) {
             return input.value;
         }
     }
@@ -228,7 +228,7 @@ function saveConfig() {
     element = element.appendChild(document.createElement('div'));
     element.setAttribute('id', 'map');
     map();
-    //require('fs').writeFileSync(`${__dirname}/${getInput('SCRIPT NAME')}.js`, config);
+    path(getInput('SCRIPT NAME'), config);
 }
 
 function showDropdown(id) {
