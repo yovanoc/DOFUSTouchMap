@@ -1,11 +1,11 @@
 const { app, BrowserWindow } = require('electron');
-const electron = require('electron');
 const path = require('path');
 const url = require('url');
 let win;
   
 function createWindow() {
-    const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize
+    const { screen } = require('electron');
+    const { width, height } = screen.getPrimaryDisplay().workAreaSize;
     win = new BrowserWindow({ width, height , titleBarStyle: 'hidden'});
 
     win.loadURL(url.format({

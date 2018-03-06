@@ -222,6 +222,7 @@ function saveConfig() {
     AUTO_DELETE: [${AUTO_DELETE}],`;
     config += `}`;
 
+    // TODO check if necessary values has been defined
     // Delete config and create map
     let element = document.getElementsByTagName('body')[0];
     element.removeChild(document.getElementById('scriptTools'));
