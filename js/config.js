@@ -121,120 +121,89 @@ function saveConfig() {
         }
     }
 
-    const SCRIPT_NAME = getInput('SCRIPT NAME');
-    const VERSION = getInput('VERSION');
-    const TYPE = getInput('TYPE');
-    const TAGS = getInput('TAGS');
-    const DESCRIPTION = getInput('DESCRIPTION');
+    function getQuantity(id) {
+        return 1; // TODO add quantity
+    }
 
-    let config = `//Title: ${SCRIPT_NAME}
-//Version: ${VERSION}
-//Type: ${TYPE}
-//Tags: ${TAGS}
-//Description: ${DESCRIPTION}
+    const headers = {
+        SCRIPT_NAME: getInput('SCRIPT NAME'),
+        VERSION: getInput('VERSION'),
+        TYPE: getInput('TYPE'),
+        TAGS: getInput('TAGS'),
+        DESCRIPTION: getInput('DESCRIPTION')
+    }
+
+    const input = {
+        MAX_PODS: getInput('MAX_PODS'),
+        MIN_MONSTERS: getInput('MIN_MONSTERS'),
+        MAX_MONSTERS: getInput('MAX_MONSTERS'),
+        MIN_MONSTERS_LEVEL: getInput('MIN_MONSTERS_LEVEL'),
+        MAX_MONSTERS_LEVEL: getInput('MAX_MONSTERS_LEVEL'),
+        MAX_FIGHTS_PER_MAP: getInput('MAX_FIGHTS_PER_MAP'),
+        BANK_PUT_KAMAS: getInput('BANK_PUT_KAMAS'),
+        BANK_GET_KAMAS: getInput('BANK_GET_KAMAS')
+    }
+
+    const checkbox = {
+        OPEN_BAGS: getCheckbox('OPEN_BAGS'),
+        DISPLAY_GATHER_COUNT: getCheckbox('DISPLAY_GATHER_COUNT'),
+        DISPLAY_FIGHT_COUNT: getCheckbox('DISPLAY_FIGHT_COUNT')
+    }
+
+    const table =  {
+        FORBIDDEN_MONSTERS: getTable('FORBIDDEN_MONSTERS'),
+        MANDATORY_MONSTERS: getTable('MANDATORY_MONSTERS'),
+        ELEMENTS_TO_GATHER: getTable('ELEMENTS_TO_GATHER'),
+        BANK_PUT_ITEMS: { value: getTable('BANK_PUT_ITEMS'), quantity: getQuantity('BANK_PUT_ITEMS') },
+        BANK_GET_ITEMS: { value: getTable('BANK_GET_ITEMS'), quantity: getQuantity('BANK_GET_ITEMS') }
+    }
+
+    let config = `//Title: ${headers.SCRIPT_NAME}
+//Version: ${headers.VERSION}
+//Type: ${headers.TYPE}
+//Tags: ${headers.TAGS}
+//Description: ${headers.DESCRIPTION}
 `;
 
-    config += `const config = {
+config += `const config = {
     `;
 
-    const MAX_PODS = getInput('MAX_PODS');
-    if (MAX_PODS) config += `
-    MAX_PODS: ${MAX_PODS},`;
+    Object.keys(input).forEach(element => {
+        if (input[element]) config += `
+        ${element}: ${input[element]},`;
+    });
 
-    const MIN_MONSTERS = getInput('MIN_MONSTERS');
-    if (MIN_MONSTERS) config += `
-    MIN_MONSTERS: ${MIN_MONSTERS}, `;
+    Object.keys(checkbox).forEach(element => {
+        if (checkbox[element]) config += `
+        ${element}: ${checkbox[element]},`;
+    });
 
-    const MAX_MONSTERS = getInput('MAX_MONSTERS');
-    if (MAX_MONSTERS) config += `
-    MAX_MONSTERS: ${MAX_MONSTERS},`;
-
-    const MIN_MONSTERS_LEVEL = getInput('MIN_MONSTERS_LEVEL');
-    if (MIN_MONSTERS_LEVEL) config += `
-    MIN_MONSTERS_LEVEL: ${MIN_MONSTERS_LEVEL},`;
-
-    const MAX_MONSTERS_LEVEL = getInput('MAX_MONSTERS_LEVEL');
-    if (MAX_MONSTERS_LEVEL) config += `
-    MAX_MONSTERS_LEVEL: ${MAX_MONSTERS_LEVEL},`;
-
-    const MAX_FIGHTS_PER_MAP = getInput('MAX_FIGHTS_PER_MAP');
-    if (MAX_FIGHTS_PER_MAP) config += `
-    MAX_FIGHTS_PER_MAP: ${MAX_FIGHTS_PER_MAP},`;
-
-    const BANK_PUT_KAMAS = getInput('BANK_PUT_KAMAS');
-    if (BANK_PUT_KAMAS) config += `
-    BANK_PUT_KAMAS: ${BANK_PUT_KAMAS},`;
-
-    const BANK_GET_KAMAS = getInput('BANK_GET_KAMAS');
-    if (BANK_GET_KAMAS) config += `
-    BANK_GET_KAMAS: ${BANK_GET_KAMAS},`;
-
-    const OPEN_BAGS = getCheckbox('OPEN_BAGS');
-    if (OPEN_BAGS) config += `
-    OPEN_BAGS: ${OPEN_BAGS},`;
-
-    const DISPLAY_GATHER_COUNT = getCheckbox('DISPLAY_GATHER_COUNT');
-    if (DISPLAY_GATHER_COUNT) config += `
-    DISPLAY_GATHER_COUNT: ${DISPLAY_GATHER_COUNT},`;
-
-    const DISPLAY_FIGHT_COUNT = getCheckbox('DISPLAY_FIGHT_COUNT');
-    if (DISPLAY_FIGHT_COUNT) config += `
-    DISPLAY_FIGHT_COUNT: ${DISPLAY_FIGHT_COUNT},`;
-
-    const FORBIDDEN_MONSTERS = getTable('FORBIDDEN_MONSTERS');
-    if (FORBIDDEN_MONSTERS) config += `
-    FORBIDDEN_MONSTERS: [${FORBIDDEN_MONSTERS}],`;
-
-    const MANDATORY_MONSTERS = getTable('MANDATORY_MONSTERS');
-    if (MANDATORY_MONSTERS) config += `
-    MANDATORY_MONSTERS: [${MANDATORY_MONSTERS}],`;
-
-    const ELEMENTS_TO_GATHER = getTable('ELEMENTS_TO_GATHER');
-    if (ELEMENTS_TO_GATHER) config += `
-    ELEMENTS_TO_GATHER: [${ELEMENTS_TO_GATHER}],`;
-
-    const BANK_PUT_ITEMS = getTable('BANK_PUT_ITEMS');
-    if (BANK_PUT_ITEMS) { // TODO get quantity
-        config += `
-        BANK_PUT_ITEMS: [`;
-        BANK_PUT_ITEMS.forEach(id => {
+    Object.keys(table).forEach(element => {
+        if (table[element] && (element !== 'BANK_PUT_ITEMS' && element !== 'BANK_GET_ITEMS')) {
             config += `
-            { item: ${id}, quantity: 1 },`;
-        });
-        config += `
-    ],
-`;
-    }
-
-    const BANK_GET_ITEMS = getTable('BANK_GET_ITEMS');
-    if (BANK_GET_ITEMS) { // TODO get quantity
-        config += `
-        BANK_GET_ITEMS: [`;
-        BANK_GET_ITEMS.forEach((id) => {
+            ${element}: ${table[element]},`;
+        } else if (element === 'BANK_PUT_ITEMS' && element === 'BANK_GET_ITEMS') {
             config += `
-            { item: ${id}, quantity: 1 },`;
-        });
-        config += `
-    ],
+            BANK_PUT_ITEMS: [`;
+            table[element].value.forEach(id => {
+                config += `
+                { item: ${id}, quantity: 1 },`;
+            });
+            config += `
+        ],
 `;
-    }
+        }
+    })
 
-    const AUTO_REGEN = getTable('AUTO_REGEN');
-    if (AUTO_REGEN) config += `
-    AUTO_REGEN: [${AUTO_REGEN}],`;
-
-    const AUTO_DELETE = getTable('AUTO_DELETE');
-    if (AUTO_DELETE) config += `
-    AUTO_DELETE: [${AUTO_DELETE}],`;
     config += `}`;
 
-    if (SCRIPT_NAME && VERSION && TYPE && TAGS && DESCRIPTION) {
+    if (headers.SCRIPT_NAME && headers.DESCRIPTION && headers.TAGS && headers.TYPE && headers.VERSION) {
         let element = document.getElementsByTagName('body')[0];
         element.removeChild(document.getElementById('scriptTools'));
         element = element.appendChild(document.createElement('div'));
         element.setAttribute('id', 'map');
         map();
-        path(SCRIPT_NAME, config);
+        path(headers.SCRIPT_NAME, config);
     } else {
         let popup = document.getElementsByTagName('body')[0].appendChild(document.createElement('div'));
         popup.setAttribute('class', 'popup');
@@ -245,11 +214,11 @@ function saveConfig() {
         const title = popup.appendChild(document.createElement('title'));
         title.setAttribute('style', 'display:initial;left:15%;height:15%;position:relative;font-size:150%;');
         title.innerText = 'MISSING INFORMATIONS';
-        if (!SCRIPT_NAME) popup.appendChild(document.createElement('div')).innerText = 'Missing SCRIPT NAME';
-        if (!VERSION) popup.appendChild(document.createElement('div')).innerText = 'Missing VERSION';
-        if (!TYPE) popup.appendChild(document.createElement('div')).innerText = 'Missing TYPE';
-        if (!TAGS) popup.appendChild(document.createElement('div')).innerText = 'Missing TAGS';
-        if (!DESCRIPTION) popup.appendChild(document.createElement('div')).innerText = 'Missing DESCRIPTION';
+        if (!headers.SCRIPT_NAME) popup.appendChild(document.createElement('div')).innerText = 'Missing SCRIPT NAME';
+        if (!headers.VERSION) popup.appendChild(document.createElement('div')).innerText = 'Missing VERSION';
+        if (!headers.TYPE) popup.appendChild(document.createElement('div')).innerText = 'Missing TYPE';
+        if (!headers.TAGS) popup.appendChild(document.createElement('div')).innerText = 'Missing TAGS';
+        if (!headers.DESCRIPTION) popup.appendChild(document.createElement('div')).innerText = 'Missing DESCRIPTION';
         const ok = popup.appendChild(document.createElement('div'));
         ok.setAttribute('class', 'button button-success');
         ok.setAttribute('style', 'bottom:0;position:absolute;right:0;');
