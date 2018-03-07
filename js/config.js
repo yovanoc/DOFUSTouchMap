@@ -121,11 +121,17 @@ function saveConfig() {
         }
     }
 
-    let config = `//Title: ${getInput('SCRIPT NAME')}
-//Version: ${getInput('VERSION')}
-//Type: ${getInput('TYPE')}
-//Tags: ${getInput('TAGS')}
-//Description: ${getInput('DESCRIPTION')}
+    const SCRIPT_NAME = getInput('SCRIPT NAME');
+    const VERSION = getInput('VERSION');
+    const TYPE = getInput('TYPE');
+    const TAGS = getInput('TAGS');
+    const DESCRIPTION = getInput('DESCRIPTION');
+
+    let config = `//Title: ${SCRIPT_NAME}
+//Version: ${VERSION}
+//Type: ${TYPE}
+//Tags: ${TAGS}
+//Description: ${DESCRIPTION}
 `;
 
     config += `const config = {
@@ -191,13 +197,13 @@ function saveConfig() {
     if (BANK_PUT_ITEMS) { // TODO get quantity
         config += `
         BANK_PUT_ITEMS: [`;
-        BANK_PUT_ITEMS.forEach((id) => {
+        BANK_PUT_ITEMS.forEach(id => {
             config += `
             { item: ${id}, quantity: 1 },`;
         });
         config += `
     ],
-    `;
+`;
     }
 
     const BANK_GET_ITEMS = getTable('BANK_GET_ITEMS');
@@ -210,7 +216,7 @@ function saveConfig() {
         });
         config += `
     ],
-    `;
+`;
     }
 
     const AUTO_REGEN = getTable('AUTO_REGEN');
@@ -222,14 +228,34 @@ function saveConfig() {
     AUTO_DELETE: [${AUTO_DELETE}],`;
     config += `}`;
 
-    // TODO check if necessary values has been defined
-    // Delete config and create map
-    let element = document.getElementsByTagName('body')[0];
-    element.removeChild(document.getElementById('scriptTools'));
-    element = element.appendChild(document.createElement('div'));
-    element.setAttribute('id', 'map');
-    map();
-    path(getInput('SCRIPT NAME'), config);
+    if (SCRIPT_NAME && VERSION && TYPE && TAGS && DESCRIPTION) {
+        let element = document.getElementsByTagName('body')[0];
+        element.removeChild(document.getElementById('scriptTools'));
+        element = element.appendChild(document.createElement('div'));
+        element.setAttribute('id', 'map');
+        map();
+        path(SCRIPT_NAME, config);
+    } else {
+        let popup = document.getElementsByTagName('body')[0].appendChild(document.createElement('div'));
+        popup.setAttribute('class', 'popup');
+        popup.setAttribute('id', 'popup');
+        popup = popup.appendChild(document.createElement('div'));
+        popup.setAttribute('class', 'popup-content');
+        popup.setAttribute('style', 'height:20%; top:40%;');
+        const title = popup.appendChild(document.createElement('title'));
+        title.setAttribute('style', 'display:initial;left:15%;height:15%;position:relative;font-size:150%;');
+        title.innerText = 'MISSING INFORMATIONS';
+        if (!SCRIPT_NAME) popup.appendChild(document.createElement('div')).innerText = 'Missing SCRIPT NAME';
+        if (!VERSION) popup.appendChild(document.createElement('div')).innerText = 'Missing VERSION';
+        if (!TYPE) popup.appendChild(document.createElement('div')).innerText = 'Missing TYPE';
+        if (!TAGS) popup.appendChild(document.createElement('div')).innerText = 'Missing TAGS';
+        if (!DESCRIPTION) popup.appendChild(document.createElement('div')).innerText = 'Missing DESCRIPTION';
+        const ok = popup.appendChild(document.createElement('div'));
+        ok.setAttribute('class', 'button button-success');
+        ok.setAttribute('style', 'bottom:0;position:absolute;right:0;');
+        ok.setAttribute('onclick', 'document.getElementsByTagName("body")[0].removeChild(document.getElementById("popup"))');
+        ok.innerText = 'OK';
+    }
 }
 
 function showDropdown(id) {
@@ -260,9 +286,9 @@ function openPopup(type, id) {
     let element = body.appendChild(document.createElement('div'));
     body.setAttribute('style', 'overflow:hidden;');
     element.setAttribute('id', 'search-container');
-    element.setAttribute('class', 'search-container');
+    element.setAttribute('class', 'popup');
     element = element.appendChild(document.createElement('div'));
-    element.setAttribute('class', 'search');
+    element.setAttribute('class', 'popup-content');
     const title = element.appendChild(document.createElement('p'));
     title.innerText = type;
     title.setAttribute('align', 'center');

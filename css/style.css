@@ -331,7 +331,7 @@ ul {
     color:rgb(90, 120, 240);
 }
 
-.search-container {
+.popup {
     z-index: 20;
     position: fixed;
     top: 0;
@@ -341,7 +341,7 @@ ul {
     transition: all .3s ease;
 }
 
-.search {
+.popup-content {
     background-color: white;
     position: relative;
     top: 15%;
@@ -451,24 +451,4 @@ ul {
 #mainMenu {
     padding-top: 7.5%;
     overflow: hidden;
-}
-
-#backArrow {
-    position: absolute;
-    margin-top: 1.375%;
-    cursor: pointer;
-    left: 93%;
-    height: 2%;
-    width: 2.5%;
-    font-size: 1.4rem;
-}
-
-#forwardArrow {
-    position: absolute;
-    margin-top: 1.375%;
-    cursor: pointer;
-    left: 95.5%;
-    height: 2%;
-    width: 2.5%;
-    font-size: 1.4rem;
 }
