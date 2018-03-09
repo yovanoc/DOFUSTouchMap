@@ -1,36 +1,4 @@
 function config() {
-    function createInput(name, type, value, min, max) {
-        let element = document.getElementById('scriptTools');
-        element = element.appendChild(document.createElement('label'));
-        element.innerText = name;
-        element.setAttribute('style', 'position:relative;left:12.5%');
-        element = element.appendChild(document.createElement('input'));
-        element.setAttribute('type', type);
-        element.setAttribute('style', 'width:75%;');
-        (value) ? element.setAttribute('value', value) : element.setAttribute('value', '');
-        element.setAttribute('id', name);
-        if (min) element.setAttribute('min', min);
-        if (max) element.setAttribute('max', max);
-    }
-
-    function createCheckbox(name) {
-        let element = document.getElementById('scriptTools');
-        element = element.appendChild(document.createElement('div'));
-        element.setAttribute('class', 'checkbox checkbox-ripple');
-        const checkboxContainer = element.appendChild(document.createElement('div'));
-        checkboxContainer.setAttribute('style', 'display:flex;position:relative;justify-content:center;');
-        let label = checkboxContainer.appendChild(document.createElement('label'));
-        label.setAttribute('for', name);
-        label.innerText = name;
-        label = checkboxContainer.appendChild(document.createElement('label'));
-        label.setAttribute('class', 'input-checkbox');
-        const input = label.appendChild(document.createElement('input'));
-        input.setAttribute('type', 'checkbox');
-        input.setAttribute('id', name);
-        const span = label.appendChild(document.createElement('span'));
-        span.setAttribute('class', 'checkbox-span');
-    }
-
     function createDropdownTable(name, type) {
         let element = document.getElementById('scriptTools');
         element = element.appendChild(document.createElement('div'));
@@ -46,10 +14,7 @@ function config() {
         element.setAttribute('style', 'display: none;');
         element.setAttribute('id', `tableContainer-${name}`);
         element = document.getElementById(`tableContainer-${name}`);
-        const button = element.appendChild(document.createElement('div'));
-        button.innerText = `Add ${type}`;
-        button.setAttribute('class', 'button button-primary');
-        button.setAttribute('onclick', `openPopup('${type}', 'table-tableContainer-${name}')`);
+        createButton(element, `Add ${type}`, 'button button-primary', `openPopup('${type}', 'table-tableContainer-${name}')`)
         const table = element.appendChild(document.createElement('table'));
         table.setAttribute('id', `table-tableContainer-${name}`);
         table.setAttribute('class', 'table');
@@ -66,22 +31,31 @@ function config() {
     const title = container.appendChild(document.createElement('title'));
     title.setAttribute('class', 'mainTitle');
     title.innerText = 'Configuration';
-    createInput('SCRIPT NAME', 'string');
-    createInput('VERSION', 'string');
-    createInput('TYPE', 'string');
-    createInput('TAGS', 'string');
-    createInput('DESCRIPTION', 'string');
-    createInput('MAX_PODS', 'number', 90, 0, 100);
-    createInput('MIN_MONSTERS', 'number', 1, 0, 8);
-    createInput('MAX_MONSTERS', 'number', 8, 0, 8);
-    createInput('MIN_MONSTERS_LEVEL', 'number', 1, 0);
-    createInput('MAX_MONSTERS_LEVEL', 'number', 1000, 0);
-    createInput('MAX_FIGHTS_PER_MAP', 'number', undefined, 0);
-    createInput('BANK_PUT_KAMAS', 'number', undefined, 0);
-    createInput('BANK_GET_KAMAS', 'number', undefined, 0);
-    createCheckbox('OPEN_BAGS');
-    createCheckbox('DISPLAY_GATHER_COUNT');
-    createCheckbox('DISPLAY_FIGHT_COUNT');
+
+    const configOpt = {
+        container: document.getElementById('scriptTools'),
+        input: {
+            inputStyle: 'width:75%;',
+            containerStyle: 'position:relative;left:12.5%'
+        }
+    }
+
+    createInput(configOpt.container, 'SCRIPT NAME', 'string', '', configOpt.input.containerStyle, configOpt.input.inputStyle);
+    createInput(configOpt.container, 'VERSION', 'string', '', configOpt.input.containerStyle, configOpt.input.inputStyle);
+    createInput(configOpt.container, 'TYPE', 'string', '', configOpt.input.containerStyle, configOpt.input.inputStyle);
+    createInput(configOpt.container, 'TAGS', 'string', '', configOpt.input.containerStyle, configOpt.input.inputStyle);
+    createInput(configOpt.container, 'DESCRIPTION', 'string', '', configOpt.input.containerStyle, configOpt.input.inputStyle);
+    createInput(configOpt.container, 'MAX_PODS', 'number', 90, configOpt.input.containerStyle, configOpt.input.inputStyle, 0, 100);
+    createInput(configOpt.container, 'MIN_MONSTERS', 'number', 1, configOpt.input.containerStyle, configOpt.input.inputStyle, 0, 8);
+    createInput(configOpt.container, 'MAX_MONSTERS', 'number', 8, configOpt.input.containerStyle, configOpt.input.inputStyle, 0, 8);
+    createInput(configOpt.container, 'MIN_MONSTERS_LEVEL', 'number', 1, configOpt.input.containerStyle, configOpt.input.inputStyle, 0);
+    createInput(configOpt.container, 'MAX_MONSTERS_LEVEL', 'number', 1000, configOpt.input.containerStyle, configOpt.input.inputStyle, 0);
+    createInput(configOpt.container, 'MAX_FIGHTS_PER_MAP', 'number', '', configOpt.input.containerStyle, configOpt.input.inputStyle, 0);
+    createInput(configOpt.container, 'BANK_PUT_KAMAS', 'number', '', configOpt.input.containerStyle, configOpt.input.inputStyle, 0);
+    createInput(configOpt.container, 'BANK_GET_KAMAS', 'number', '', configOpt.input.containerStyle, configOpt.input.inputStyle, 0);
+    createCheckbox(configOpt.container, 'OPEN_BAGS');
+    createCheckbox(configOpt.container, 'DISPLAY_GATHER_COUNT');
+    createCheckbox(configOpt.container, 'DISPLAY_FIGHT_COUNT');
     createDropdownTable('FORBIDDEN_MONSTERS', 'monster');
     createDropdownTable('MANDATORY_MONSTERS', 'monster');
     createDropdownTable('ELEMENTS_TO_GATHER', 'resource');
@@ -89,21 +63,10 @@ function config() {
     createDropdownTable('BANK_GET_ITEMS', 'item');
     createDropdownTable('AUTO_REGEN', 'item');
     createDropdownTable('AUTO_DELETE', 'item');
-    const button = container.appendChild(document.createElement('div'));
-    button.setAttribute('class', 'button button-success');
-    button.setAttribute('style', 'position:relative;width:73%;left:11.5%;padding:2%;');
-    button.setAttribute('onclick', 'saveConfig()');
-    button.innerText = 'Save'; 
+    createButton(container, 'Save', 'button button-success', 'saveConfig()', 'position:relative;width:73%;left:11.5%;padding:2%;');
 }
 
 function saveConfig() {    
-    function getInput(id) {
-        const input = document.getElementById(id);
-        if (input && (input.value !== input.defaultValue && (input.value !== undefined || input.value >= 0))) {
-            return input.value;
-        }
-    }
-
     function getCheckbox(id) {
         if (document.getElementById(id).checked) {
             return document.getElementById(id).checked;
@@ -193,7 +156,7 @@ config += `const config = {
         ],
 `;
         }
-    })
+    });
 
     config += `}`;
 
@@ -219,11 +182,7 @@ config += `const config = {
         if (!headers.TYPE) popup.appendChild(document.createElement('div')).innerText = 'Missing TYPE';
         if (!headers.TAGS) popup.appendChild(document.createElement('div')).innerText = 'Missing TAGS';
         if (!headers.DESCRIPTION) popup.appendChild(document.createElement('div')).innerText = 'Missing DESCRIPTION';
-        const ok = popup.appendChild(document.createElement('div'));
-        ok.setAttribute('class', 'button button-success');
-        ok.setAttribute('style', 'bottom:0;position:absolute;right:0;');
-        ok.setAttribute('onclick', 'document.getElementsByTagName("body")[0].removeChild(document.getElementById("popup"))');
-        ok.innerText = 'OK';
+        createButton(popup, 'OK', 'button button-success', 'document.getElementsByTagName("body")[0].removeChild(document.getElementById("popup"))', 'bottom:0;position:absolute;right:0;');
     }
 }
 
@@ -298,14 +257,8 @@ function openPopup(type, id) {
             }
         })
     }, true);
-    const quit = element.appendChild(document.createElement('div'));
-    quit.setAttribute('class', 'button button-danger search-button-quit');
-    quit.setAttribute('onclick', `document.getElementsByTagName('body')[0].removeChild(document.getElementById('search-container')); document.getElementsByTagName('body')[0].removeAttribute('style');`);
-    quit.innerText = 'Quit';
-    const save = element.appendChild(document.createElement('div'));
-    save.setAttribute('class', 'button button-success search-button-save');
-    save.setAttribute('onclick', `saveAndClose('${id}')`);
-    save.innerText = 'Save';
+    createButton(element, 'Quit', 'button button-danger search-button-quit', `document.getElementsByTagName('body')[0].removeChild(document.getElementById('search-container')); document.getElementsByTagName('body')[0].removeAttribute('style');`);
+    createButton(element, 'Save', 'button button-success search-button-save', `saveAndClose('${id}')`);
     element = document.getElementById('tableid');
     Object.keys(ids).forEach((name, index) => {
         const tr = element.appendChild(document.createElement('tr'));
@@ -352,7 +305,7 @@ function saveAndClose(id) {
             const stcolumn = tr.appendChild(document.createElement('th'));
             stcolumn.innerText = name;
             const ndcolumn = tr.appendChild(document.createElement('th'));
-            ndcolumn.innerText = itemid
+            ndcolumn.innerText = itemid;
         }
     }
 
