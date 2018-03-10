@@ -1,13 +1,14 @@
 function createTable(container, id, columnNameArr, columnStyleArr) {
-  const table = container.appendChild(document.createElement('table'));
-  table.setAttribute('id', id);
-  table.setAttribute('class', 'table');
-  const tr = table.appendChild(document.createElement('tr'));
-  columnNameArr.forEach((element, index) => {
-    const th = tr.appendChild(document.createElement('th'));
-    th.setAttribute('style', columnStyleArr[index]);
-    th.innerText = columnNameArr[index];
+    const table = container.appendChild(document.createElement('table'));
+    table.setAttribute('id', id);
+    table.setAttribute('class', 'table');
+    const tr = table.appendChild(document.createElement('tr'));
+    columnNameArr.forEach((element, index) => {
+        const th = tr.appendChild(document.createElement('th'));
+        th.setAttribute('style', columnStyleArr[index]);
+        th.innerText = columnNameArr[index];
   });
+  return table;
 }
 
 function addTableElement(tableid, columnValueArr) {
