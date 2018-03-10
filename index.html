@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta charset='utf-8' http-equiv="Content-Security-Policy" content="media-src http: https: data:; script-src 'self' 'unsafe-inline'; style-src file: http: https: 'unsafe-inline'; child-src 'self'; frame-src 'self';">
+        <meta charset='utf-8' http-equiv="Content-Security-Policy" content="media-src http: https: data:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src file: http: https: 'unsafe-inline'; child-src 'self'; frame-src 'self';">
         <title>CookieTouch Script Editor</title>
         <link rel='stylesheet' type='text/css' href='lib/leaflet.css'/>
         <link rel='stylesheet' type='text/css' href='css/style.css'>
@@ -17,6 +17,8 @@
         <script src='js/components/checkbox.js'></script>
         <script src='js/components/table.js'></script>
         <script src='js/components/popup.js'></script>
+        <script src='js/components/values/configIds.js'></script>
+        <script src='js/components/values/ids.js'></script>
     </head>
     <body onload='mainMenu()'></body>
 </html>

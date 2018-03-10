@@ -22,7 +22,35 @@ function showCreateScript() {
 }
 
 function showEditScript() {
-    const element = document.getElementsByTagName('body')[0];
-    element.removeChild(document.getElementById('mainMenu'));
-    // TODO
+    const { dialog } = require('electron').remote;
+    const file = dialog.showOpenDialog({ filters: [{ name: 'Scripts', extensions: ['js'] }] });
+    if (typeof file[0] === 'string') {
+        const { readFileSync } = require('fs');
+        const { basename } = require('path');
+        const content = readFileSync(file[0], 'utf8');
+        const configuration = eval(`${content};config`);
+
+        let element = document.getElementsByTagName('body')[0];
+        element.removeChild(document.getElementById('mainMenu'));
+        element = element.appendChild(document.createElement('div'));
+        element.setAttribute('id', 'scriptTools');
+
+        config(content);
+
+        document.getElementById('SCRIPT NAME').value = basename(file[0], '.js');
+        console.log(basename(file[0], '.js'));
+        Object.keys(configuration).forEach((value) => {
+            element = document.getElementById(elementsIds[value]);
+            if (element.type === 'checkbox') {
+                element.checked = configuration[value];
+            } else if (element.getAttribute('class') === 'table') {
+                element.value = configuration[value];
+                configuration[value].forEach(val => {
+                    addTableElement(element.id, [undefined, val]);
+                });
+            } else {
+                element.value = configuration[value];
+            }
+        });
+    }
 }
