@@ -37,9 +37,7 @@ function showEditScript() {
 
         config(content);
 
-        document.getElementById('SCRIPT NAME').value = basename(file[0], '.js');
-        console.log(basename(file[0], '.js'));
-        Object.keys(configuration).forEach((value) => {
+        Object.keys(configuration).forEach(value => {
             element = document.getElementById(elementsIds[value]);
             if (element.type === 'checkbox') {
                 element.checked = configuration[value];
@@ -52,5 +50,19 @@ function showEditScript() {
                 element.value = configuration[value];
             }
         });
+
+        const contentSplit = content.split(/\n/gm);
+        contentSplit.forEach((line, index) => {
+            if (index <= 5 && line !== '') {
+                Object.keys(headers).forEach(id => {
+                    if (line.toUpperCase().search(id) > -1) {
+                        const value = line.split(':')[1];
+                        if (value.startsWith(' ')) {
+                            document.getElementById(id).value = value.slice(1);
+                        }
+                    }
+                });
+            }
+        })
     }
 }

@@ -31,7 +31,7 @@ function config(content) {
         }
     }
 
-    createInput(configOpt.container, 'SCRIPT NAME', 'string', '', configOpt.input.containerStyle, configOpt.input.inputStyle);
+    createInput(configOpt.container, 'TITLE', 'string', '', configOpt.input.containerStyle, configOpt.input.inputStyle);
     createInput(configOpt.container, 'VERSION', 'string', '', configOpt.input.containerStyle, configOpt.input.inputStyle);
     createInput(configOpt.container, 'TYPE', 'string', '', configOpt.input.containerStyle, configOpt.input.inputStyle);
     createInput(configOpt.container, 'TAGS', 'string', '', configOpt.input.containerStyle, configOpt.input.inputStyle);
@@ -58,14 +58,6 @@ function config(content) {
 }
 
 function saveConfig(content) {
-    const headers = {
-        SCRIPT_NAME: getInput('SCRIPT NAME'),
-        VERSION: getInput('VERSION'),
-        TYPE: getInput('TYPE'),
-        TAGS: getInput('TAGS'),
-        DESCRIPTION: getInput('DESCRIPTION')
-    }
-
     const input = {
         MAX_PODS: getInput('MAX_PODS'),
         MIN_MONSTERS: getInput('MIN_MONSTERS'),
@@ -95,7 +87,7 @@ function saveConfig(content) {
         return 1; // TODO add quantity
     }
 
-    let config = `//Title: ${headers.SCRIPT_NAME}
+    let config = `//Title: ${headers.TITLE}
 //Version: ${headers.VERSION}
 //Type: ${headers.TYPE}
 //Tags: ${headers.TAGS}
@@ -134,16 +126,16 @@ config += `const config = {
 
     config += `}`;
 
-    if (headers.SCRIPT_NAME && headers.DESCRIPTION && headers.TAGS && headers.TYPE && headers.VERSION) {
+    if (headers.TITLE && headers.DESCRIPTION && headers.TAGS && headers.TYPE && headers.VERSION) {
         let element = document.getElementsByTagName('body')[0];
         element.removeChild(document.getElementById('scriptTools'));
         element = element.appendChild(document.createElement('div'));
         element.setAttribute('id', 'map');
         map();
         if (content !== undefined) {
-            path(headers.SCRIPT_NAME, config, content);
+            path(headers.TITLE, config, content);
         } else {
-            path(headers.SCRIPT_NAME, config);
+            path(headers.TITLE, config);
         }
     } else {
         const popup = createPopup('height:20%; top:40%;');
@@ -151,7 +143,7 @@ config += `const config = {
         title.innerText = 'MISSING INFORMATIONS';
         title.setAttribute('align', 'center');
         title.setAttribute('style', 'font-size:130%;margin:.3rem;');
-        if (!headers.SCRIPT_NAME) popup.appendChild(document.createElement('div')).innerText = 'Missing SCRIPT NAME';
+        if (!headers.TITLE) popup.appendChild(document.createElement('div')).innerText = 'Missing TITLE';
         if (!headers.VERSION) popup.appendChild(document.createElement('div')).innerText = 'Missing VERSION';
         if (!headers.TYPE) popup.appendChild(document.createElement('div')).innerText = 'Missing TYPE';
         if (!headers.TAGS) popup.appendChild(document.createElement('div')).innerText = 'Missing TAGS';

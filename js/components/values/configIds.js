@@ -1,5 +1,5 @@
 const elementsIds = {
-    SCRIPT_NAME: 'SCRIPT NAME',
+    TITLE: 'TITLE',
     VERSION: 'VERSION',
     TYPE: 'TYPE',
     TAGS: 'TAGS',

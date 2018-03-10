@@ -1,5 +1,3 @@
-const { isNullOrUndefined } = require('util');
-
 function createCheckbox(container, name) {
   const element = container.appendChild(document.createElement('div'));
   element.setAttribute('class', 'checkbox checkbox-ripple');
@@ -18,7 +16,7 @@ function createCheckbox(container, name) {
 }
 
 function getCheckbox(id) {
-  if (!isNullOrUndefined(document.getElementById(id).checked)) {
+  if (document.getElementById(id).checked !== null) {
     return document.getElementById(id).checked;
   }
 }
