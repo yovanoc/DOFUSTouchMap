@@ -320,15 +320,13 @@ ul {
 }
 
 .mainTitle {
-    position: relative;
+    margin: 0;
     font-size: 350%;
-    display: grid;
-    justify-content: center;
 }
 
 .title:hover, .title:active, .title:focus {
-    cursor:pointer;
-    color:rgb(90, 120, 240);
+    cursor: pointer;
+    color: rgb(90, 120, 240);
 }
 
 .popup {
@@ -367,9 +365,8 @@ ul {
     position: absolute;
     margin: 0;
     top: .2rem;
+    width: 100%;
     font-size: 1.4rem;
-    left: 35%;
-    width: 30%;
     text-transform: uppercase;
     user-select: none;
 }

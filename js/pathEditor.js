@@ -1,4 +1,4 @@
-function path(fileName, config, content) {
+function pathContainer(fileName, config, content) {
     document.getElementsByTagName('body')[0].appendChild(document.createElement('div')).setAttribute('id', 'container');
     patheditor();
     const buttoncontainer = document.getElementById('container').appendChild(document.createElement('div'));

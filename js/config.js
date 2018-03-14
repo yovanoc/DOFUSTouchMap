@@ -1,5 +1,5 @@
 function config(content) {
-    function createDropdownTable(name, type) {
+    function createDropdownTable(name, type, ids) {
         let element = document.getElementById('scriptTools');
         element = element.appendChild(document.createElement('div'));
         element.setAttribute('class', 'item');
@@ -13,13 +13,13 @@ function config(content) {
         element.setAttribute('class', 'content');
         element.setAttribute('style', 'display: none;');
         element.setAttribute('id', `tableContainer-${name}`);
-        element = document.getElementById(`tableContainer-${name}`);
-        createButton(element, `Add ${type}`, 'button button-primary', `openPopup('${type}', 'table-tableContainer-${name}')`)
+        createButton(element, `Add ${type}`, 'button button-primary', `openPopup('${type}', 'table-tableContainer-${name}', ${`${ids}`})`);
         createTable(element, `table-tableContainer-${name}`, [type, 'id'], ['width:80%;', 'width:20%;']);
     }
 
     const container = document.getElementById('scriptTools');
-    const title = container.appendChild(document.createElement('title'));
+    const title = container.appendChild(document.createElement('p'));
+    title.setAttribute('align', 'center');
     title.setAttribute('class', 'mainTitle');
     title.innerText = 'Configuration';
 
@@ -47,13 +47,13 @@ function config(content) {
     createCheckbox(configOpt.container, 'OPEN_BAGS');
     createCheckbox(configOpt.container, 'DISPLAY_GATHER_COUNT');
     createCheckbox(configOpt.container, 'DISPLAY_FIGHT_COUNT');
-    createDropdownTable('FORBIDDEN_MONSTERS', 'monster');
-    createDropdownTable('MANDATORY_MONSTERS', 'monster');
-    createDropdownTable('ELEMENTS_TO_GATHER', 'resource');
-    createDropdownTable('BANK_PUT_ITEMS', 'item');
-    createDropdownTable('BANK_GET_ITEMS', 'item');
-    createDropdownTable('AUTO_REGEN', 'item');
-    createDropdownTable('AUTO_DELETE', 'item');
+    createDropdownTable('FORBIDDEN_MONSTERS', 'Monsters', monstersIds);
+    createDropdownTable('MANDATORY_MONSTERS', 'Monsters', monstersIds);
+    createDropdownTable('ELEMENTS_TO_GATHER', 'Resources', resourcesIds);
+    createDropdownTable('BANK_PUT_ITEMS', 'Items', itemsIds);
+    createDropdownTable('BANK_GET_ITEMS', 'Items', itemsIds);
+    createDropdownTable('AUTO_REGEN', 'Consumables', consumablesIds);
+    createDropdownTable('AUTO_DELETE', 'Items', itemsIds);
     createButton(container, 'Save', 'button button-success', `saveConfig(${content})`, 'position:relative;width:73%;left:11.5%;padding:2%;');
 }
 
@@ -97,26 +97,26 @@ function saveConfig(content) {
 config += `const config = {
     `;
 
-    Object.keys(input).forEach(element => {
+    Object.values(input).forEach(element => {
         if (input[element]) config += `
         ${element}: ${input[element]},`;
     });
 
-    Object.keys(checkbox).forEach(element => {
+    Object.values(checkbox).forEach(element => {
         if (checkbox[element]) config += `
         ${element}: ${checkbox[element]},`;
     });
 
-    Object.keys(table).forEach(element => {
-        if (table[element] && (element !== 'BANK_PUT_ITEMS' && element !== 'BANK_GET_ITEMS')) {
+    Object.values(table).forEach(element => {
+        if (table[element] && (element !== 'BANK_PUT_ITEMS' || element !== 'BANK_GET_ITEMS')) {
             config += `
             ${element}: ${table[element]},`;
-        } else if (element === 'BANK_PUT_ITEMS' && element === 'BANK_GET_ITEMS') {
+        } else if (element === 'BANK_PUT_ITEMS' || element === 'BANK_GET_ITEMS') {
             config += `
-            BANK_PUT_ITEMS: [`;
+            ${element}: [`;
             table[element].value.forEach(id => {
                 config += `
-                { item: ${id}, quantity: 1 },`;
+                { item: ${id}, quantity: ${getQuantity(id)} },`;
             });
             config += `
         ],
@@ -133,9 +133,9 @@ config += `const config = {
         element.setAttribute('id', 'map');
         map();
         if (content !== undefined) {
-            path(headers.TITLE, config, content);
+            pathContainer(headers.TITLE, config, content);
         } else {
-            path(headers.TITLE, config);
+            pathContainer(headers.TITLE, config);
         }
     } else {
         const popup = createPopup('height:20%; top:40%;');
@@ -175,7 +175,7 @@ function fixBugHide(id) { // hideDropdown calls directly showDropdown, so the dr
     document.getElementById(`item-${id}`).setAttribute('onclick', `showDropdown('${id}')`);
 }
 
-function openPopup(type, id) {
+function openPopup(type, id, ids) {
     let popup = createPopup('');
     const title = popup.appendChild(document.createElement('p'));
     title.innerText = type;
@@ -189,11 +189,10 @@ function openPopup(type, id) {
     const tableContainer = popup.appendChild(document.createElement('div'));
     tableContainer.setAttribute('class', 'tableContainer');
     const table = createTable(tableContainer, 'tableid', [type, 'id'], ['width:80%;', 'width:20%;']);
-    const ids = getIds(type);
     searchBar.addEventListener('input', (InputEvent) => {
         const tr = document.getElementById('tableid').getElementsByTagName('tr');
-        Object.keys(ids).forEach((name, index) => {
-            if (name.toUpperCase().indexOf(searchBar.value.toUpperCase()) > -1) {
+        ids.forEach((obj, index) => {
+            if (obj.name.toUpperCase().indexOf(searchBar.value.toUpperCase()) > -1) {
                 tr[index + 1].removeAttribute('style');
             } else {
                 tr[index + 1].setAttribute('style', 'display:none;');
@@ -202,15 +201,14 @@ function openPopup(type, id) {
     }, true);
     createButton(popup, 'Quit', 'button button-danger search-button-quit', `document.getElementsByTagName('body')[0].removeChild(document.getElementById('popup')); document.getElementsByTagName('body')[0].removeAttribute('style');`);
     createButton(popup, 'Save', 'button button-success search-button-save', `saveAndClose('${id}')`);
-
-    Object.keys(ids).forEach((name, index) => {
+    ids.forEach((obj, index) => {
         const tr = table.appendChild(document.createElement('tr'));
-        tr.setAttribute('id', `${name}`);
-        tr.setAttribute('onclick', `select("${name}")`);
+        tr.setAttribute('id', `${obj.name}`);
+        tr.setAttribute('onclick', `select("${obj.name}")`);
         const stcolumn = tr.appendChild(document.createElement('th'));
-        stcolumn.innerText = name;
+        stcolumn.innerText = obj.name;
         const ndcolumn = tr.appendChild(document.createElement('th'));
-        ndcolumn.innerText = ids[name].id;
+        ndcolumn.innerText = obj.id;
         if (index > 2000) { // Don't render after 2000 rows => performance issues
             tr.setAttribute('style', 'display:none;');
         }
@@ -218,7 +216,8 @@ function openPopup(type, id) {
 }
 
 function select(name) {
-    const element = document.getElementById(name)
+    const element = document.getElementById(name);
+    console.log(element);
     element.setAttribute('class', 'selected');
     element.setAttribute('onclick', `unselect("${name}")`);
 }
