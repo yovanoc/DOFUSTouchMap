@@ -126,6 +126,7 @@ config += `const config = {
 
     config += `}`;
 
+    updateHeadersValues();
     if (headers.TITLE && headers.DESCRIPTION && headers.TAGS && headers.TYPE && headers.VERSION) {
         let element = document.getElementsByTagName('body')[0];
         element.removeChild(document.getElementById('scriptTools'));
