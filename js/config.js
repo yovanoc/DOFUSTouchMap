@@ -203,8 +203,8 @@ function openPopup(type, id, ids) {
     createButton(popup, 'Save', 'button button-success search-button-save', `saveAndClose('${id}')`);
     ids.forEach((obj, index) => {
         const tr = table.appendChild(document.createElement('tr'));
-        tr.setAttribute('id', `${obj.name}`);
-        tr.setAttribute('onclick', `select("${obj.name}")`);
+        tr.setAttribute('id', `${obj.name}-${obj.id}`);
+        tr.setAttribute('onclick', `select("${obj.name}-${obj.id}")`);
         const stcolumn = tr.appendChild(document.createElement('th'));
         stcolumn.innerText = obj.name;
         const ndcolumn = tr.appendChild(document.createElement('th'));
@@ -215,16 +215,16 @@ function openPopup(type, id, ids) {
     });
 }
 
-function select(name) {
-    const element = document.getElementById(name);
+function select(id) {
+    const element = document.getElementById(id);
     element.setAttribute('class', 'selected');
-    element.setAttribute('onclick', `unselect("${name}")`);
+    element.setAttribute('onclick', `unselect("${id}")`);
 }
 
-function unselect(name) {
-    const element = document.getElementById(name);
+function unselect(id) {
+    const element = document.getElementById(id);
     element.removeAttribute('class');
-    element.setAttribute('onclick', `select("${name}")`);
+    element.setAttribute('onclick', `select("${id}")`);
 }
 
 function saveAndClose(id) {
