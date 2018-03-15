@@ -54,9 +54,7 @@ function map() {
         bounds: bounds,
     }).addTo(map);
 
-    const rectangle = L.divIcon({
-        iconSize: [2 * cellwidth, 2 * cellheight]
-    });
+    const rectangle = L.divIcon({ iconSize: [2 * cellwidth, 2 * cellheight] });
 
     map.on('mousemove', (mouseEvent) => {
         xy = mapXYtoDofusXY(mouseEvent.latlng);

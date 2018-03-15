@@ -1,7 +1,9 @@
-const { writeFileSync, readFileSync, existsSync } = require('fs');
+const { writeFileSync, readFileSync, existsSync, mkdirSync } = require('fs');
 
 function update() {
-    const versionFile = __dirname + '/ids/assetsVersion.json';
+    const dir = __dirname + '/ids';
+    if (!existsSync(dir)) mkdirSync(dir);
+    const versionFile = dir + '/assetsVersion.json';
     let consumablesArr = [];
     let unknownsArr = [];
     let monstersArr = [];
@@ -50,15 +52,15 @@ function update() {
         });
         const intervalMonsters = setInterval(() => {
             if (monstersArr.length !== 0) {
-                writeFileSync(`${__dirname}/ids/Monsters.json`, JSON.stringify(monstersArr));
+                writeFileSync(`${dir}/Monsters.json`, JSON.stringify(monstersArr));
                 clearInterval(intervalMonsters);
             }
         }, 2000);
     
         const intervalItems = setInterval(() => {
             if (unknownsArr.length !== 0) {
-                writeFileSync(`${__dirname}/ids/Items.json`, JSON.stringify(unknownsArr));
-                writeFileSync(`${__dirname}/ids/Consumables.json`, JSON.stringify(consumablesArr));
+                writeFileSync(`${dir}/Items.json`, JSON.stringify(unknownsArr));
+                writeFileSync(`${dir}/Consumables.json`, JSON.stringify(consumablesArr));
                 clearInterval(intervalItems);
             }
         }, 3000);
@@ -71,16 +73,16 @@ function update() {
         if (oldVersion !== assetsVersion) {
             writeFileSync(versionFile, assetsVersion, 'utf8');
             downloadIds(assetsVersion);
-            resourcesIds = readFileSync(`${__dirname}/ids/Resources.json`, 'utf8'); // Resources is never downloaded
+            resourcesIds = readFileSync(`${dir}/Resources.json`, 'utf8'); // Resources is never downloaded
             monstersIds = monstersArr;
             itemsIds = unknownsArr;
             consumablesIds = consumablesArr;
             mainMenu();
         } else {
-            monstersIds = readFileSync(`${__dirname}/ids/Monsters.json`, 'utf8');
-            itemsIds = readFileSync(`${__dirname}/ids/Items.json`, 'utf8');
-            consumablesIds = readFileSync(`${__dirname}/ids/Consumables.json`, 'utf8');
-            resourcesIds = readFileSync(`${__dirname}/ids/Resources.json`, 'utf8');
+            monstersIds = readFileSync(`${dir}/Monsters.json`, 'utf8');
+            itemsIds = readFileSync(`${dir}/Items.json`, 'utf8');
+            consumablesIds = readFileSync(`${dir}/Consumables.json`, 'utf8');
+            resourcesIds = readFileSync(`${dir}/Resources.json`, 'utf8');
             mainMenu();
         }
     });

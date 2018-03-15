@@ -4,4 +4,4 @@ const headers = {
   TYPE: getInput('TYPE'),
   TAGS: getInput('TAGS'),
   DESCRIPTION: getInput('DESCRIPTION')
-}
+};

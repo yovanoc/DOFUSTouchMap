@@ -78,6 +78,6 @@ function showEditScript() {
                     }
                 });
             }
-        })
+        });
     }
 }

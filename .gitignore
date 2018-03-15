@@ -1,7 +1,11 @@
 
 node_modules/
-ids/
+ids/assetsVersion.json
+ids/Monsters.json
+ids/Items.json
+ids/Consumables.json
 
 package-lock.json
 
 .DS_STORE
+

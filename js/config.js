@@ -29,7 +29,7 @@ function config(content) {
             inputStyle: 'width:75%;',
             containerStyle: 'position:relative;left:12.5%'
         }
-    }
+    };
 
     createInput(configOpt.container, 'TITLE', 'string', '', configOpt.input.containerStyle, configOpt.input.inputStyle);
     createInput(configOpt.container, 'VERSION', 'string', '', configOpt.input.containerStyle, configOpt.input.inputStyle);
@@ -58,6 +58,10 @@ function config(content) {
 }
 
 function saveConfig(content) {
+    function getQuantity(id) {
+        return 1; // TODO add quantity
+    }
+
     const input = {
         MAX_PODS: getInput('MAX_PODS'),
         MIN_MONSTERS: getInput('MIN_MONSTERS'),
@@ -81,10 +85,6 @@ function saveConfig(content) {
         ELEMENTS_TO_GATHER: getTable('ELEMENTS_TO_GATHER'),
         BANK_PUT_ITEMS: { value: getTable('BANK_PUT_ITEMS'), quantity: getQuantity('BANK_PUT_ITEMS') },
         BANK_GET_ITEMS: { value: getTable('BANK_GET_ITEMS'), quantity: getQuantity('BANK_GET_ITEMS') }
-    }
-    
-    function getQuantity(id) {
-        return 1; // TODO add quantity
     }
 
     let config = `//Title: ${headers.TITLE}
@@ -197,7 +197,7 @@ function openPopup(type, id, ids) {
             } else {
                 tr[index + 1].setAttribute('style', 'display:none;');
             }
-        })
+        });
     }, true);
     createButton(popup, 'Quit', 'button button-danger search-button-quit', `document.getElementsByTagName('body')[0].removeChild(document.getElementById('popup')); document.getElementsByTagName('body')[0].removeAttribute('style');`);
     createButton(popup, 'Save', 'button button-success search-button-save', `saveAndClose('${id}')`);
@@ -217,13 +217,12 @@ function openPopup(type, id, ids) {
 
 function select(name) {
     const element = document.getElementById(name);
-    console.log(element);
     element.setAttribute('class', 'selected');
     element.setAttribute('onclick', `unselect("${name}")`);
 }
 
 function unselect(name) {
-    const element = document.getElementById(name)
+    const element = document.getElementById(name);
     element.removeAttribute('class');
     element.setAttribute('onclick', `select("${name}")`);
 }
