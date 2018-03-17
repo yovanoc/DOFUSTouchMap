@@ -82,7 +82,7 @@ input:hover {
 
 .leaflet-div-icon {
     background: transparent;
-    border: 2px solid black;
+    border: 1px solid black;
 }
 
 .checkbox .input-checkbox {
@@ -448,6 +448,8 @@ ul {
     width: 100%;
     background-color: white;
     position: fixed;
+    -webkit-app-region: drag;
+    user-select: none;
     box-shadow: 4px 4px 9px rgba(0, 0, 0, .26);
     z-index: 30;
 }

@@ -52,8 +52,8 @@ function showEditScript() {
 
         config(content);
 
-        Object.values(configuration).forEach(value => {
-            element = document.getElementById(elementsIds[value]);
+        Object.keys(configuration).forEach(value => {
+            element = document.getElementById(configIds[value]);
             if (element.type === 'checkbox') {
                 element.checked = configuration[value];
             } else if (element.getAttribute('class') === 'table') {
@@ -69,7 +69,7 @@ function showEditScript() {
         const contentSplit = content.split(/\n/gm);
         contentSplit.forEach((line, index) => {
             if (index <= 5 && line !== '') {
-                Object.values(headers).forEach(id => {
+                Object.keys(headers).forEach(id => {
                     if (line.toUpperCase().search(id) > -1) {
                         const value = line.split(':')[1];
                         if (value.startsWith(' ')) {

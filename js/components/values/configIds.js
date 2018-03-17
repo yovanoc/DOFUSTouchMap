@@ -1,4 +1,4 @@
-const elementsIds = {
+const configIds = {
     TITLE: 'TITLE',
     VERSION: 'VERSION',
     TYPE: 'TYPE',
