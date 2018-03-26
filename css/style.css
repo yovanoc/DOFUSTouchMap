@@ -45,7 +45,6 @@ input:hover {
     bottom: 40%;
     width: 100%;
     height: 100%;
-    box-shadow: 4px 4px 9px rgba(0, 0, 0, .26);
 }
 
 #coords {
@@ -457,4 +456,36 @@ ul {
 #mainMenu {
     padding-top: 7.5%;
     overflow: hidden;
+}
+
+.navlink {
+    user-select: none;
+    position: relative;
+    cursor: pointer;
+    outline: none;
+    font-size: 0.8rem;
+    height: 100%;
+    width: 15%;
+    display: inline-grid;
+    justify-content: center;
+    align-content: center;
+    flex-direction: column;
+    border-left: 1px solid #BDBDBD;
+    border-right: 1px solid #BDBDBD;
+    background-color: white;
+    transition: .2s ease-out;
+    color: black;
+    text-align: center;
+    white-space: normal;
+    word-wrap: break-word;
+    text-transform: uppercase;
+}
+
+.navlink-active {
+    background-color: #007bff;
+    color: white
+}
+
+.navlink-active:hover {
+    background-color: #4da3ff;
 }

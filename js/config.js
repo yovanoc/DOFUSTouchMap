@@ -229,7 +229,7 @@ function unselect(id) {
 }
 
 function saveAndClose(id) {
-    Array.prototype.slice.call(document.getElementsByClassName('selected')).forEach((element) => {
+    Array.from(document.getElementsByClassName('selected')).forEach(element => {
         addTableElement(id, [element.children[0].innerText, element.children[1].innerText]);
     });
     const body = document.getElementsByTagName('body')[0];
